@@ -1,0 +1,2934 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="FIHIHhabXnTsHi6OqGUnv5JOp0uQH-1F8PYmbhxhN9k" />
+<title>AI Learning Code — แพลตฟอร์มการเรียนรู้ AI สำหรับนักเรียนและครู</title>
+<meta name="description" content="AI Learning Code แพลตฟอร์มการเรียนรู้ยุคใหม่สำหรับนักเรียนและครู เตรียมสอบเข้ามหาวิทยาลัยด้วยบทเรียน แบบฝึกหัด และ Prompt สำหรับใช้งาน AI">
+<meta property="og:title" content="AI Learning Code">
+<meta property="og:description" content="แพลตฟอร์มการเรียนรู้ยุคใหม่สำหรับนักเรียนและครู เตรียมสอบเข้ามหาวิทยาลัยด้วยพลังของ AI">
+<meta property="og:type" content="website">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#101B3D;
+  --heading:#101B3D;
+  --blue-deep:#1D3A8F;
+  --blue:#2F5FE0;
+  --sky:#5BB8F5;
+  --lavender:#C9BCF2;
+  --lavender-soft:#EFEAFB;
+  --mint:#6EE7C9;
+  --paper:#F6F8FF;
+  --white:#FFFFFF;
+  --ink:#16213E;
+  --ink-soft:#5A6382;
+  --line:#E3E7F7;
+  --radius:20px;
+  --shadow:0 10px 30px -12px rgba(29,58,143,.18);
+  --shadow-soft:0 4px 16px -6px rgba(29,58,143,.12);
+  color-scheme:light;
+}
+html.dark{
+  --heading:#EDF1FF;
+  --lavender-soft:#232A4D;
+  --paper:#0B0F1E;
+  --white:#161C33;
+  --ink:#E7EAF5;
+  --ink-soft:#98A1C4;
+  --line:#2A3153;
+  --shadow:0 10px 30px -12px rgba(0,0,0,.5);
+  --shadow-soft:0 4px 16px -6px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+html.dark body{
+  background:
+    radial-gradient(circle at 6% 10%, rgba(91,184,245,.10), transparent 40%),
+    radial-gradient(circle at 94% 6%, rgba(201,188,242,.10), transparent 42%),
+    radial-gradient(circle at 88% 78%, rgba(110,231,201,.08), transparent 44%),
+    radial-gradient(circle at 8% 88%, rgba(47,95,224,.08), transparent 40%),
+    radial-gradient(rgba(255,255,255,.04) 1px, transparent 1px) 0 0/28px 28px,
+    var(--paper);
+}
+html.dark header.site{ background:rgba(11,15,30,.85); }
+html.dark .otp-row input,
+html.dark .field input,
+html.dark .field select,
+html.dark textarea,
+html.dark .inline-form input,
+html.dark .inline-form select{ background:var(--paper); color:var(--ink); border-color:var(--line); }
+html.dark .modal{ background:var(--white); }
+html.dark .opt{ background:var(--paper); }
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+html,body{max-width:100%;overflow-x:hidden;}
+body{
+  font-family:'Sarabun',sans-serif;
+  background:
+    radial-gradient(circle at 6% 10%, rgba(91,184,245,.20), transparent 40%),
+    radial-gradient(circle at 94% 6%, rgba(201,188,242,.22), transparent 42%),
+    radial-gradient(circle at 88% 78%, rgba(110,231,201,.16), transparent 44%),
+    radial-gradient(circle at 8% 88%, rgba(47,95,224,.12), transparent 40%),
+    radial-gradient(rgba(29,58,143,.08) 1px, transparent 1px) 0 0/28px 28px,
+    var(--paper);
+  background-attachment:fixed,fixed,fixed,fixed,fixed,fixed;
+  color:var(--ink);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.display{font-family:'Kanit',sans-serif;}
+button{font-family:inherit;cursor:pointer;}
+a{color:inherit;text-decoration:none;}
+img{max-width:100%;display:block;}
+::selection{background:var(--mint);color:var(--heading);}
+:focus-visible{outline:3px solid var(--sky);outline-offset:2px;}
+
+/* ---------- layout shell ---------- */
+.view{display:none;}
+.view.active{display:block;animation:fadeIn .35s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px;}
+
+/* ---------- header ---------- */
+header.site{
+  position:sticky;top:0;z-index:40;
+  background:rgba(246,248,255,.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.live-stats-bar{
+  background:var(--navy);color:rgba(255,255,255,.85);
+  font-size:12.5px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:7px 12px;flex-wrap:wrap;text-align:center;
+}
+.live-stats-bar .ls-item{display:inline-flex;align-items:center;gap:6px;}
+.live-stats-bar b{color:var(--mint);font-family:'Kanit',sans-serif;font-size:13.5px;}
+.live-stats-bar .ls-sep{opacity:.4;}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--mint);display:inline-block;animation:pulse 1.8s infinite;}
+
+/* ---------- confetti ---------- */
+@keyframes confetti-fall{
+  0%{ opacity:1; transform:translateY(0) translateX(0) rotate(0deg); }
+  100%{ opacity:0; transform:translateY(100vh) translateX(var(--drift)) rotate(600deg); }
+}
+
+/* ---------- live activity ticker ---------- */
+.activity-ticker{
+  position:fixed;left:16px;bottom:16px;z-index:400;
+  display:flex;flex-direction:column;gap:8px;
+  max-width:min(340px, calc(100vw - 32px));
+  pointer-events:none;
+}
+.activity-ticker-item{
+  background:var(--navy);color:var(--white);font-size:13px;font-weight:600;
+  padding:10px 16px;border-radius:12px;box-shadow:0 10px 26px -8px rgba(16,27,61,.5);
+  opacity:0;transform:translateX(-14px);transition:opacity .35s ease,transform .35s ease;
+}
+.activity-ticker-item.show{opacity:1;transform:translateX(0);}
+.nav-inner{
+  max-width:1140px;margin:0 auto;padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  flex-wrap:wrap;row-gap:8px;
+}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Kanit',sans-serif;font-weight:700;font-size:19px;color:var(--heading);}
+.brand-mark{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,var(--blue),var(--lavender));
+  position:relative;flex:none;
+}
+.brand-mark::before,.brand-mark::after{
+  content:"";position:absolute;border-radius:50%;background:var(--white);
+}
+.brand-mark::before{width:5px;height:5px;top:8px;left:8px;box-shadow:12px 4px 0 0 var(--white),6px 14px 0 0 var(--white);}
+.brand-mark::after{width:0;}
+.main-nav{display:flex;gap:6px;}
+.main-nav button{
+  background:none;border:none;padding:9px 14px;border-radius:999px;
+  font-size:15px;color:var(--ink-soft);font-weight:500;transition:.2s;
+}
+.main-nav button:hover{background:var(--lavender-soft);color:var(--heading);}
+.main-nav button.on{background:var(--navy);color:var(--white);}
+.nav-actions{display:flex;align-items:center;gap:8px;}
+.avatar{border-radius:50%;object-fit:cover;flex:none;display:inline-block;vertical-align:middle;background:var(--line);}
+.avatar-ph{display:inline-flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;font-weight:700;line-height:1;}
+.avatar-edit{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+.avatar-edit .btns{display:flex;gap:8px;flex-wrap:wrap;}
+.avatar-edit .hint{font-size:12.5px;color:var(--ink-soft);margin-top:8px;}
+.btn{
+  border:none;border-radius:999px;padding:10px 20px;font-size:14.5px;font-weight:600;
+  transition:.2s;white-space:nowrap;
+}
+.btn-primary{background:var(--blue);color:var(--white);box-shadow:0 6px 16px -6px rgba(47,95,224,.5);}
+.btn-primary:hover{background:var(--blue-deep);transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--heading);border:1.5px solid var(--line);}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue);}
+.btn-sm{padding:7px 14px;font-size:13.5px;}
+.btn-block{width:100%;text-align:center;}
+.userchip{display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--line);border-radius:999px;padding:6px 8px 6px 14px;font-size:13.5px;font-weight:600;color:var(--heading);}
+.userchip .dot{width:8px;height:8px;border-radius:50%;background:var(--mint);}
+.hamb{display:none;background:none;border:none;font-size:22px;color:var(--heading);}
+
+@media(max-width:880px){
+  .main-nav{display:none;}
+  .hamb{display:block;}
+  .brand{font-size:16px;flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .nav-actions{gap:6px;}
+  .nav-actions .btn{padding:8px 10px;font-size:13px;}
+  .userchip{padding:5px 6px 5px 10px;font-size:12px;gap:5px;}
+  .userchip-name{max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .btn-label{display:none;}
+  .btn-label-short{display:inline;}
+}
+.btn-label-short{display:none;}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative;overflow:hidden;
+  background:linear-gradient(160deg,var(--navy) 0%,var(--blue-deep) 55%,var(--blue) 100%);
+  color:var(--white);padding:96px 0 120px;
+}
+.hero canvas{position:absolute;inset:0;opacity:.55;}
+.hero-inner{position:relative;z-index:2;max-width:760px;margin:0 auto;text-align:center;padding:0 24px;}
+
+.hero-grid{position:relative;z-index:2;max-width:1160px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:1fr;gap:44px;align-items:center;}
+@media(min-width:980px){.hero-grid{grid-template-columns:1.05fr .95fr;gap:30px;}}
+.hero-grid .hero-text{text-align:center;}
+.hero-grid .hero-text .desc{margin-left:auto;margin-right:auto;}
+@media(min-width:980px){
+  .hero-grid .hero-text{text-align:left;}
+  .hero-grid .hero-text .desc{margin-left:0;}
+  .hero-grid .hero-text .hero-cta{justify-content:flex-start;}
+}
+.hero-preview{display:none;position:relative;}
+@media(min-width:980px){.hero-preview{display:block;}}
+.preview-card{
+  background:var(--white);border-radius:22px;padding:20px;box-shadow:0 30px 60px -18px rgba(6,12,40,.45);
+  transform:rotate(2deg);position:relative;z-index:2;max-width:340px;margin:0 auto;
+}
+.preview-card .pc-head{display:flex;gap:6px;margin-bottom:16px;}
+.preview-card .pc-dot{width:9px;height:9px;border-radius:50%;}
+.preview-row{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);}
+.preview-row:last-child{border-bottom:none;}
+.preview-row .pr-ic{width:36px;height:36px;flex:none;border-radius:10px;background:var(--lavender-soft);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.preview-row strong{display:block;font-size:12.5px;color:var(--heading);margin-bottom:6px;font-weight:600;}
+.preview-row .progress-bar{margin-top:0;}
+.float-chip{
+  position:absolute;background:var(--white);border-radius:14px;padding:10px 16px;font-size:12.5px;font-weight:700;
+  color:var(--heading);box-shadow:0 14px 26px -10px rgba(6,12,40,.35);z-index:3;
+  animation:floaty 4.5s ease-in-out infinite;
+}
+.float-chip.chip-a{top:-18px;right:8px;animation-delay:.2s;color:var(--blue-deep);}
+.float-chip.chip-b{bottom:8px;left:-22px;animation-delay:1.1s;color:#0F9D6C;}
+@keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
+@media(prefers-reduced-motion:reduce){.float-chip{animation:none;}}
+.hero-mascot{position:absolute;bottom:-30px;right:-38px;z-index:1;animation:floaty 5.5s ease-in-out infinite;animation-delay:.6s;filter:drop-shadow(0 14px 20px rgba(6,12,40,.35));}
+@media(prefers-reduced-motion:reduce){.hero-mascot{animation:none;}}
+@media(max-width:1180px){.hero-mascot{display:none;}}
+.hero-wave{position:absolute;left:0;right:0;bottom:-1px;line-height:0;z-index:2;pointer-events:none;}
+.hero-wave svg{width:100%;height:46px;display:block;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  padding:7px 16px;border-radius:999px;font-size:13px;letter-spacing:.04em;margin-bottom:26px;
+}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--mint);animation:pulse 1.8s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.hero h1{font-size:clamp(38px,7vw,64px);font-weight:800;line-height:1.08;margin-bottom:14px;letter-spacing:-.01em;}
+.hero .tag{font-size:clamp(17px,2.6vw,22px);font-weight:400;color:var(--lavender);margin-bottom:18px;font-family:'Kanit',sans-serif;}
+.hero p.desc{font-size:16.5px;color:rgba(255,255,255,.78);max-width:520px;margin:0 auto 34px;}
+.hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.hero .btn-primary{background:var(--mint);color:var(--heading);box-shadow:0 10px 24px -8px rgba(110,231,201,.5);}
+.hero .btn-primary:hover{background:#59d8b8;}
+.hero .btn-outline{background:transparent;border:1.5px solid rgba(255,255,255,.4);color:var(--white);border-radius:999px;padding:10px 22px;font-weight:600;font-size:14.5px;}
+.hero .btn-outline:hover{border-color:var(--white);}
+
+/* ---------- stats strip ---------- */
+.stats-strip{background:var(--navy);position:relative;z-index:2;margin-top:-1px;}
+.stats-strip-inner{
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:22px;
+  padding:34px 24px;
+}
+.stat-item{flex:1;min-width:130px;text-align:center;color:var(--white);}
+.stat-item .n{font-family:'Kanit',sans-serif;font-size:28px;font-weight:800;color:var(--mint);}
+.stat-item .l{font-size:12.5px;color:rgba(255,255,255,.68);margin-top:2px;}
+@media(max-width:640px){.stat-item{min-width:44%;}}
+
+/* ---------- split cards ---------- */
+/* ---------- split cards (kept for future use) ---------- */
+.split-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:8px;text-align:left;}
+@media(max-width:760px){.split-grid{grid-template-columns:1fr;}}
+.split-card{border-radius:22px;padding:32px;position:relative;overflow:hidden;border:1px solid rgba(29,58,143,.08);}
+.split-card.student{background:linear-gradient(160deg,var(--lavender-soft),#E6F3FF);}
+.split-card.teacher{background:linear-gradient(160deg,#E6F3FF,#E8FBF4);}
+.split-ic{width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px;}
+.split-card h3{font-size:20px;color:var(--heading);margin-bottom:14px;}
+.split-card ul{list-style:none;margin-bottom:22px;}
+.split-card li{display:flex;gap:10px;font-size:14px;color:var(--ink-soft);margin-bottom:11px;line-height:1.4;}
+.split-card li::before{content:"✓";flex:none;color:var(--blue);font-weight:800;}
+
+/* ---------- marquee ---------- */
+.marquee-strip{
+  background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  overflow:hidden;padding:16px 0;position:relative;
+}
+.marquee-strip::before,.marquee-strip::after{
+  content:"";position:absolute;top:0;bottom:0;width:70px;z-index:2;pointer-events:none;
+}
+.marquee-strip::before{left:0;background:linear-gradient(90deg,var(--white),transparent);}
+.marquee-strip::after{right:0;background:linear-gradient(-90deg,var(--white),transparent);}
+.marquee-track{display:flex;gap:14px;width:max-content;animation:marquee 26s linear infinite;}
+.marquee-track span{
+  font-family:'Kanit',sans-serif;font-size:14px;font-weight:600;color:var(--blue-deep);
+  background:var(--lavender-soft);border-radius:999px;padding:9px 20px;white-space:nowrap;
+}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@media(prefers-reduced-motion:reduce){.marquee-track{animation:none;}}
+
+/* ---------- why grid ---------- */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:36px;text-align:left;}
+@media(max-width:820px){.why-grid{grid-template-columns:1fr;}}
+.why-item{
+  background:var(--white);border:1px solid var(--line);border-radius:18px;padding:26px 22px;
+  box-shadow:var(--shadow-soft);opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;
+}
+.why-item.in-view{opacity:1;transform:translateY(0);}
+.why-ic{
+  width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,var(--lavender-soft),#E6F3FF);
+  display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;
+}
+.why-item h4{font-size:16px;color:var(--heading);margin-bottom:8px;font-weight:600;}
+.why-item p{font-size:13.5px;color:var(--ink-soft);}
+
+/* ---------- steps ---------- */
+.steps-row{display:flex;align-items:flex-start;justify-content:center;gap:6px;margin-top:36px;flex-wrap:wrap;}
+.step-item{
+  flex:1;min-width:180px;max-width:230px;text-align:center;background:var(--white);border:1px solid var(--line);
+  border-radius:18px;padding:26px 18px 22px;box-shadow:var(--shadow-soft);position:relative;
+  opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;
+}
+.step-item.in-view{opacity:1;transform:translateY(0);}
+.step-num{
+  width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--white);font-family:'Kanit',sans-serif;
+  font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;
+}
+.step-ic{width:52px;height:52px;border-radius:14px;background:var(--lavender-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.step-item h4{font-size:15px;color:var(--heading);margin-bottom:6px;font-weight:600;}
+.step-item p{font-size:13px;color:var(--ink-soft);}
+.step-connector{flex:none;margin-top:60px;}
+@media(max-width:820px){.step-connector{display:none;}}
+
+/* ---------- cta banner ---------- */
+.cta-banner{
+  background:linear-gradient(135deg,var(--lavender-soft) 0%,var(--white) 60%);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:64px 0;margin-top:10px;position:relative;overflow:hidden;
+}
+.cta-blob{
+  position:absolute;width:420px;height:420px;border-radius:50%;
+  background:radial-gradient(circle,rgba(91,184,245,.35),transparent 70%);
+  top:-180px;right:-120px;filter:blur(10px);pointer-events:none;
+}
+.cta-doodle{position:absolute;bottom:18px;left:24px;opacity:.7;pointer-events:none;}
+@media(max-width:700px){.cta-doodle{display:none;}}
+.cta-banner h2{font-size:clamp(23px,3.6vw,30px);color:var(--heading);margin-bottom:8px;}
+.cta-banner p{color:var(--ink-soft);font-size:15px;}
+
+/* ---------- section cards ---------- */
+.section{padding:70px 0;}
+.section-head{text-align:center;max-width:560px;margin:0 auto 40px;}
+.section-head .eyebrow-line{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
+.section-head h2{font-size:clamp(24px,4vw,32px);font-weight:700;color:var(--heading);}
+.card-grid{
+  margin-top:-70px;position:relative;z-index:3;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+}
+@media(max-width:900px){.card-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.card-grid{grid-template-columns:1fr;}}
+.feature-card{
+  background:var(--white);border-radius:var(--radius);padding:28px 22px;
+  box-shadow:var(--shadow);border:1px solid var(--line);
+  transition:transform .25s, box-shadow .25s, border-color .25s;cursor:pointer;position:relative;overflow:hidden;
+}
+.feature-card::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;
+  background:linear-gradient(135deg,var(--blue),var(--lavender),var(--mint));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:0;transition:opacity .25s;pointer-events:none;
+}
+.feature-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px -14px rgba(29,58,143,.28);}
+.feature-card:hover::after{opacity:1;}
+.feature-card .ic{
+  width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:16px;transition:transform .3s;
+}
+.feature-card:hover .ic{transform:scale(1.1) rotate(-4deg);}
+.feature-card:nth-child(1) .ic{background:var(--lavender-soft);}
+.feature-card:nth-child(2) .ic{background:#E6F3FF;}
+.feature-card:nth-child(3) .ic{background:#E8FBF4;}
+.feature-card:nth-child(4) .ic{background:#FFF3E8;}
+.feature-card h3{font-size:17.5px;font-weight:600;color:var(--heading);margin-bottom:6px;}
+.feature-card p{font-size:14px;color:var(--ink-soft);}
+
+/* ---------- generic page header ---------- */
+.page-hero{
+  background:linear-gradient(155deg,var(--white) 0%,var(--lavender-soft) 130%);
+  border-bottom:1px solid var(--line);padding:48px 0 36px;position:relative;overflow:hidden;
+}
+.page-hero::before{
+  content:"";position:absolute;width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(circle,rgba(91,184,245,.32),transparent 70%);
+  top:-170px;right:-70px;pointer-events:none;
+}
+.page-hero::after{
+  content:"";position:absolute;width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(110,231,201,.28),transparent 70%);
+  bottom:-150px;left:-50px;pointer-events:none;
+}
+.page-hero .wrap{position:relative;z-index:2;}
+.back-home{
+  display:inline-flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--line);
+  border-radius:999px;padding:7px 15px;font-size:13px;font-weight:600;color:var(--blue-deep);
+  margin-bottom:14px;transition:.2s;box-shadow:var(--shadow-soft);
+}
+.staff-only{display:none;}
+.staff-only.show{display:inline-flex;}
+.page-hero .eyebrow-line{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;}
+.page-hero h1{font-size:clamp(26px,4vw,36px);color:var(--heading);font-weight:700;}
+.page-hero p{color:var(--ink-soft);margin-top:8px;max-width:560px;}
+
+.grid-list{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px;}
+@media(max-width:920px){.grid-list{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.grid-list{grid-template-columns:1fr;}}
+
+.item-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow-soft);}
+.item-card .badge{display:inline-block;font-size:11.5px;font-weight:600;color:var(--blue);background:var(--lavender-soft);padding:3px 10px;border-radius:999px;margin-bottom:10px;}
+.item-card h4{font-size:16px;font-weight:600;color:var(--heading);margin-bottom:6px;}
+.item-card p{font-size:13.5px;color:var(--ink-soft);margin-bottom:14px;}
+
+.prompt-card{background:var(--navy);color:var(--white);border-radius:16px;padding:20px;position:relative;}
+.prompt-card .badge{background:rgba(255,255,255,.12);color:var(--mint);}
+.prompt-card pre{
+  font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#D7DEFF;
+  white-space:pre-wrap;background:rgba(255,255,255,.06);border-radius:10px;padding:12px;margin:10px 0 14px;
+  max-height:160px;overflow:auto;
+}
+.copy-btn{
+  background:var(--mint);color:var(--heading);border:none;border-radius:999px;padding:7px 16px;
+  font-size:12.5px;font-weight:700;
+}
+.copy-btn.done{background:var(--sky);}
+
+/* ---------- forms / modal ---------- */
+.overlay{
+  position:fixed;inset:0;background:rgba(16,27,61,.55);backdrop-filter:blur(3px);
+  display:none;align-items:flex-start;justify-content:center;z-index:100;padding:40px 16px;overflow-y:auto;
+}
+.overlay.active{display:flex;}
+.modal{
+  background:var(--white);border-radius:22px;max-width:460px;width:100%;padding:32px 28px;
+  box-shadow:0 30px 60px -20px rgba(16,27,61,.4);position:relative;animation:pop .25s ease;
+}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.98);}to{opacity:1;transform:translateY(0) scale(1);}}
+.modal-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:20px;color:var(--ink-soft);}
+.modal h2{font-size:22px;color:var(--heading);margin-bottom:4px;}
+.modal .sub{font-size:13.5px;color:var(--ink-soft);margin-bottom:22px;}
+.role-pick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px;}
+.role-opt{
+  border:1.5px solid var(--line);border-radius:16px;padding:20px 14px;text-align:center;background:var(--paper);
+  transition:.2s;
+}
+.role-opt:hover{border-color:var(--blue);}
+.role-opt .ic{font-size:26px;margin-bottom:8px;}
+.role-opt strong{display:block;font-size:14.5px;color:var(--heading);}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--heading);margin-bottom:6px;}
+.field input,.field select{
+  width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14.5px;
+  font-family:inherit;background:var(--paper);
+}
+.field input:focus,.field select:focus{border-color:var(--blue);background:var(--white);}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.otp-row{display:flex;gap:8px;justify-content:center;margin:18px 0;}
+.otp-row input{width:42px;height:52px;text-align:center;font-size:20px;border-radius:10px;border:1.5px solid var(--line);}
+.hint{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:10px;}
+.hint b{color:var(--blue);}
+.err{font-size:13px;color:#D64545;margin-top:6px;display:none;}
+.err.show{display:block;}
+.stepbar{display:flex;gap:6px;margin-bottom:22px;}
+.stepbar span{flex:1;height:4px;border-radius:4px;background:var(--line);}
+.stepbar span.on{background:var(--blue);}
+.switch-line{text-align:center;font-size:13.5px;color:var(--ink-soft);margin-top:16px;}
+.switch-line button{background:none;border:none;color:var(--blue);font-weight:700;font-size:13.5px;}
+
+/* ---------- dashboards ---------- */
+.dash-shell{display:grid;grid-template-columns:220px 1fr;gap:28px;}
+@media(max-width:800px){.dash-shell{grid-template-columns:1fr;}}
+.dash-side{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:14px;height:fit-content;}
+.dash-side button{
+  display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:none;
+  padding:11px 12px;border-radius:10px;font-size:14px;color:var(--ink-soft);font-weight:500;margin-bottom:2px;
+}
+.dash-side button.on{background:var(--lavender-soft);color:var(--blue-deep);font-weight:700;}
+.dash-side button:hover{background:var(--paper);}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+@media(max-width:700px){.stat-row{grid-template-columns:1fr 1fr;}}
+.stat{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
+.stat .n{font-size:24px;font-weight:800;color:var(--heading);font-family:'Kanit',sans-serif;}
+.stat .l{font-size:12.5px;color:var(--ink-soft);}
+.panel{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px;}
+.panel h3{font-size:16.5px;color:var(--heading);margin-bottom:14px;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+th{text-align:left;color:var(--ink-soft);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line);font-size:12.5px;}
+td{padding:10px;border-bottom:1px solid var(--line);}
+tr:last-child td{border-bottom:none;}
+.pill{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;}
+.pill.ok{background:#E8FBF4;color:#0F9D6C;}
+.pill.wait{background:#FFF3E8;color:#C9822B;}
+.progress-bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:6px;}
+.progress-bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--mint));}
+.inline-form{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+.inline-form input,.inline-form select{border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13.5px;font-family:inherit;}
+.code-tag{font-family:'JetBrains Mono',monospace;background:var(--lavender-soft);color:var(--blue-deep);padding:3px 9px;border-radius:6px;font-size:12.5px;font-weight:700;}
+
+/* ---------- quiz ---------- */
+.quiz-q{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--line);}
+.quiz-q:last-child{border-bottom:none;}
+.quiz-q p{font-weight:600;color:var(--heading);margin-bottom:10px;}
+.opt{display:block;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:14px;transition:.15s;}
+.opt:hover{border-color:var(--blue);}
+.opt input{margin-right:8px;}
+.opt.correct{border-color:#0F9D6C;background:#E8FBF4;}
+.opt.wrong{border-color:#D64545;background:#FDEDED;}
+
+footer{background:var(--navy);color:rgba(255,255,255,.7);padding:40px 0 26px;margin-top:60px;text-align:center;font-size:13.5px;}
+footer .brand{color:var(--white);justify-content:center;margin-bottom:8px;}
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--navy);color:var(--white);padding:12px 22px;border-radius:999px;font-size:13.5px;font-weight:600;
+  box-shadow:0 10px 26px -8px rgba(16,27,61,.5);opacity:0;pointer-events:none;transition:.3s;z-index:200;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.empty{text-align:center;color:var(--ink-soft);font-size:13.5px;padding:24px;}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="nav-inner">
+    <div class="brand" onclick="go('home')" style="cursor:pointer;"><span class="brand-mark"></span> AI Learning Code</div>
+    <nav class="main-nav" id="mainNav">
+      <button data-nav="lessons">บทเรียน</button>
+      <button data-nav="exercises">แบบฝึก</button>
+      <button data-nav="prompts">Prompt</button>
+      <button data-nav="media">สื่อการเรียนรู้</button>
+      <button data-nav="leaderboard">🏆 อันดับ</button>
+    </nav>
+    <div class="nav-actions" id="navActions">
+      <button class="btn btn-ghost btn-sm" onclick="openLogin()">เข้าสู่ระบบ</button>
+      <button class="btn btn-primary btn-sm" onclick="openSignup()">สมัครสมาชิก</button>
+    </div>
+    <button class="hamb" onclick="toggleMobileNav()">☰</button>
+    <button id="themeToggleBtn" onclick="toggleDarkMode()" title="สลับโหมดมืด/สว่าง" style="background:none;border:1.5px solid var(--line);border-radius:999px;width:36px;height:36px;flex:none;font-size:16px;cursor:pointer;">🌙</button>
+  </div>
+  <nav id="mobileNav" style="display:none;border-top:1px solid var(--line);padding:10px 24px;">
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <button data-nav="lessons" style="text-align:left;padding:10px;border:none;background:none;font-size:15px;">บทเรียน</button>
+      <button data-nav="exercises" style="text-align:left;padding:10px;border:none;background:none;font-size:15px;">แบบฝึก</button>
+      <button data-nav="prompts" style="text-align:left;padding:10px;border:none;background:none;font-size:15px;">Prompt</button>
+      <button data-nav="media" style="text-align:left;padding:10px;border:none;background:none;font-size:15px;">สื่อการเรียนรู้</button>
+      <button data-nav="leaderboard" style="text-align:left;padding:10px;border:none;background:none;font-size:15px;">🏆 อันดับ</button>
+    </div>
+  </nav>
+</header>
+
+<div class="live-stats-bar">
+  <span class="ls-item"><span class="live-dot"></span> ออนไลน์ตอนนี้: <b id="liveOnlineCount">-</b> คน</span>
+  <span class="ls-sep">•</span>
+  <span class="ls-item">👥 สมาชิกทั้งหมด: <b id="liveTotalCount">-</b> คน</span>
+</div>
+
+<!-- ============ HOME ============ -->
+<section class="view active" id="view-home">
+  <div class="hero">
+    <canvas id="net"></canvas>
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="eyebrow"><span class="dot"></span> Modern Education + AI</div>
+        <h1 class="display">AI Learning Code</h1>
+        <div class="tag">เรียนรู้ให้ฉลาดขึ้น ด้วยพลังของ AI</div>
+        <p class="desc">แพลตฟอร์มการเรียนรู้ยุคใหม่สำหรับนักเรียนและครู</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" onclick="go('lessons')">เริ่มเรียนรู้</button>
+          <button class="btn-outline" id="heroSignupBtn" onclick="openSignup()">สมัครสมาชิก</button>
+        </div>
+      </div>
+      <div class="hero-preview">
+        <div class="float-chip chip-a">✨ Prompt พร้อมใช้ 40+</div>
+        <div class="preview-card">
+          <div class="pc-head"><span class="pc-dot" style="background:#FF6B6B"></span><span class="pc-dot" style="background:#FFC15E"></span><span class="pc-dot" style="background:#6EE7C9"></span></div>
+          <div class="preview-row"><div class="pr-ic">📚</div><div style="flex:1;"><strong>เขียน Prompt อย่างมีประสิทธิภาพ</strong><div class="progress-bar"><i style="width:70%;"></i></div></div></div>
+          <div class="preview-row"><div class="pr-ic">📝</div><div style="flex:1;"><strong>แบบฝึกตรรกะเบื้องต้น</strong><div class="progress-bar"><i style="width:45%;"></i></div></div></div>
+          <div class="preview-row"><div class="pr-ic">🎓</div><div style="flex:1;"><strong>วิดีโอ: เทคนิคอ่านจับใจความ</strong><div class="progress-bar"><i style="width:90%;"></i></div></div></div>
+        </div>
+        <div class="float-chip chip-b">📊 คะแนนเฉลี่ย 82%</div>
+        <svg class="hero-mascot" width="128" height="128" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="100" cy="188" rx="52" ry="8" fill="rgba(16,27,61,.15)"/>
+          <rect x="55" y="95" width="90" height="78" rx="24" fill="url(#mBody)"/>
+          <rect x="75" y="114" width="50" height="32" rx="8" fill="#0B1530"/>
+          <rect x="82" y="122" width="34" height="4" rx="2" fill="#6EE7C9"/>
+          <rect x="82" y="130" width="22" height="4" rx="2" fill="#5BB8F5"/>
+          <rect x="82" y="138" width="28" height="4" rx="2" fill="#C9BCF2"/>
+          <rect x="33" y="118" width="20" height="32" rx="10" fill="#2F5FE0"/>
+          <rect x="147" y="118" width="20" height="32" rx="10" fill="#2F5FE0"/>
+          <g transform="translate(56,150) rotate(-5)">
+            <rect width="80" height="13" rx="3" fill="#fff" stroke="#C9BCF2" stroke-width="2"/>
+            <line x1="40" y1="0" x2="40" y2="13" stroke="#C9BCF2" stroke-width="2"/>
+          </g>
+          <circle cx="100" cy="60" r="41" fill="url(#mHead)"/>
+          <line x1="100" y1="19" x2="100" y2="6" stroke="#5BB8F5" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="100" cy="5" r="6" fill="#6EE7C9"/>
+          <circle cx="84" cy="58" r="6.5" fill="#101B3D"/>
+          <circle cx="116" cy="58" r="6.5" fill="#101B3D"/>
+          <circle cx="86.3" cy="55.5" r="2" fill="#fff"/>
+          <circle cx="118.3" cy="55.5" r="2" fill="#fff"/>
+          <path d="M84 75 Q100 87 116 75" stroke="#101B3D" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <circle cx="26" cy="46" r="4" fill="#6EE7C9"/>
+          <circle cx="172" cy="38" r="3" fill="#C9BCF2"/>
+          <circle cx="16" cy="86" r="3" fill="#5BB8F5"/>
+          <circle cx="182" cy="88" r="4" fill="#6EE7C9"/>
+          <defs>
+            <linearGradient id="mBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2F5FE0"/><stop offset="1" stop-color="#1D3A8F"/></linearGradient>
+            <linearGradient id="mHead" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F3EEFC"/><stop offset="1" stop-color="#C9BCF2"/></linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+    <div class="hero-wave">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0,32 C240,64 480,0 720,16 C960,32 1200,60 1440,28 L1440,60 L0,60 Z" fill="var(--paper)"/></svg>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="card-grid">
+      <div class="feature-card" onclick="go('lessons')">
+        <div class="ic">📚</div><h3>บทเรียน</h3><p>เรียนรู้เนื้อหาที่จัดเตรียมไว้</p>
+      </div>
+      <div class="feature-card" onclick="go('exercises')">
+        <div class="ic">📝</div><h3>แบบฝึก</h3><p>ฝึกทำแบบฝึกหัดและตรวจสอบความเข้าใจ</p>
+      </div>
+      <div class="feature-card" onclick="go('prompts')">
+        <div class="ic">✨</div><h3>Prompt</h3><p>เรียนรู้และใช้งาน Prompt เพื่อใช้ AI ให้เกิดประโยชน์</p>
+      </div>
+      <div class="feature-card" onclick="go('media')">
+        <div class="ic">🎓</div><h3>สื่อการเรียนรู้</h3><p>รวมวิดีโอ เอกสาร รูปภาพ และสื่อการเรียนรู้ต่าง ๆ</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-strip">
+    <div class="wrap stats-strip-inner">
+      <div class="stat-item"><div class="n">120+</div><div class="l">บทเรียนพร้อมใช้งาน</div></div>
+      <div class="stat-item"><div class="n">40+</div><div class="l">Prompt สำหรับการเรียนรู้</div></div>
+      <div class="stat-item"><div class="n">300+</div><div class="l">แบบฝึกหัดให้ฝึกทำ</div></div>
+    </div>
+  </div>
+
+  <div class="marquee-strip">
+    <div class="marquee-track">
+      <span>✨ ขับเคลื่อนด้วย AI</span><span>🎯 ออกแบบเพื่อสอบเข้ามหาวิทยาลัย</span><span>📝 ตรวจคะแนนอัตโนมัติ</span><span>📚 อัปเดตเนื้อหาใหม่ทุกสัปดาห์</span><span>🏫 สร้างห้องเรียนได้ไม่จำกัด</span><span>🔒 ปลอดภัยสำหรับโรงเรียน</span>
+      <span>✨ ขับเคลื่อนด้วย AI</span><span>🎯 ออกแบบเพื่อสอบเข้ามหาวิทยาลัย</span><span>📝 ตรวจคะแนนอัตโนมัติ</span><span>📚 อัปเดตเนื้อหาใหม่ทุกสัปดาห์</span><span>🏫 สร้างห้องเรียนได้ไม่จำกัด</span><span>🔒 ปลอดภัยสำหรับโรงเรียน</span>
+    </div>
+  </div>
+
+  <div class="section wrap" style="max-width:980px;">
+    <div class="section-head">
+      <div class="eyebrow-line">เริ่มต้นใช้งานง่าย ๆ</div>
+      <h2>แค่ 3 ขั้นตอนก็เริ่มเรียนได้ทันที</h2>
+    </div>
+    <div class="steps-row">
+      <div class="step-item" data-reveal>
+        <div class="step-num">1</div>
+        <div class="step-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.4" stroke="#2F5FE0" stroke-width="1.7"/><path d="M3.5 19c.8-3.2 3-4.8 5.5-4.8s4.7 1.6 5.5 4.8" stroke="#2F5FE0" stroke-width="1.7" stroke-linecap="round"/><path d="M16 8h5M18.5 5.5v5" stroke="#6EE7C9" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+        <h4>สมัครสมาชิก</h4>
+        <p>เลือกว่าคุณเป็นนักเรียนหรือครู แล้วยืนยันอีเมลด้วย OTP</p>
+      </div>
+      <svg class="step-connector" width="60" height="16" viewBox="0 0 60 16"><line x1="0" y1="8" x2="60" y2="8" stroke="var(--lavender)" stroke-width="2.5" stroke-dasharray="2 8" stroke-linecap="round"/></svg>
+      <div class="step-item" data-reveal>
+        <div class="step-num">2</div>
+        <div class="step-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z" stroke="#2F5FE0" stroke-width="1.7"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5v-13Z" stroke="#5BB8F5" stroke-width="1.7"/></svg></div>
+        <h4>เลือกบทเรียนหรือเข้าห้องเรียน</h4>
+        <p>เริ่มเรียนบทเรียนที่สนใจ หรือกรอกรหัสเข้าห้องเรียนของครู</p>
+      </div>
+      <svg class="step-connector" width="60" height="16" viewBox="0 0 60 16"><line x1="0" y1="8" x2="60" y2="8" stroke="var(--lavender)" stroke-width="2.5" stroke-dasharray="2 8" stroke-linecap="round"/></svg>
+      <div class="step-item" data-reveal>
+        <div class="step-num">3</div>
+        <div class="step-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M4 19V13M11 19V8M18 19V4" stroke="#2F5FE0" stroke-width="1.7" stroke-linecap="round"/><path d="M4 19h16" stroke="#6EE7C9" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+        <h4>ฝึกฝนและติดตามผล</h4>
+        <p>ทำแบบฝึกหัด ดูคะแนน และติดตามความก้าวหน้าของตัวเองได้ตลอด</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section wrap" style="max-width:980px;">
+    <div class="section-head">
+      <div class="eyebrow-line">ทำไมต้อง AI Learning Code</div>
+      <h2>ออกแบบมาเพื่อการเตรียมสอบเข้ามหาวิทยาลัยอย่างเป็นระบบ</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-item" data-reveal>
+        <div class="why-ic">🏫</div>
+        <h4>ครูสร้างห้องเรียนได้ในคลิกเดียว</h4>
+        <p>มอบหมายแบบฝึก ติดตามความก้าวหน้า และดูคะแนนนักเรียนแบบเรียลไทม์</p>
+      </div>
+      <div class="why-item" data-reveal>
+        <div class="why-ic">📈</div>
+        <h4>นักเรียนเห็นความก้าวหน้าของตัวเอง</h4>
+        <p>เรียนบทเรียน ฝึกทำแบบฝึกหัด แล้วดูคะแนนและพัฒนาการได้ทุกที่ทุกเวลา</p>
+      </div>
+      <div class="why-item" data-reveal>
+        <div class="why-ic">✨</div>
+        <h4>ใช้ AI ช่วยการเรียนรู้ได้จริง</h4>
+        <p>คลัง Prompt พร้อมใช้ ช่วยให้เรียนและฝึกฝนกับ AI ได้อย่างมีประสิทธิภาพ</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-banner">
+    <div class="cta-blob"></div>
+    <svg class="cta-doodle" width="90" height="90" viewBox="0 0 90 90"><circle cx="45" cy="45" r="6" fill="var(--mint)"/><circle cx="14" cy="18" r="4" fill="var(--sky)"/><circle cx="76" cy="14" r="5" fill="var(--lavender)"/><circle cx="8" cy="70" r="3.5" fill="var(--lavender)"/><circle cx="82" cy="72" r="4.5" fill="var(--mint)"/></svg>
+    <div class="wrap" style="text-align:center;position:relative;z-index:2;">
+      <h2 id="ctaHeading">พร้อมเริ่มต้นเรียนรู้ไปกับ AI แล้วหรือยัง?</h2>
+      <p id="ctaSub">สมัครสมาชิกฟรี แล้วเริ่มบทเรียนแรกของคุณได้ทันที</p>
+      <div class="hero-cta" style="justify-content:center;margin-top:22px;">
+        <button class="btn btn-primary" id="ctaSignupBtn" style="background:var(--blue);color:var(--white);box-shadow:0 6px 16px -6px rgba(47,95,224,.5);" onclick="openSignup()">สมัครสมาชิกฟรี</button>
+        <button class="btn btn-ghost" onclick="go('lessons')">ดูบทเรียนทั้งหมด</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LESSONS ============ -->
+<section class="view" id="view-lessons">
+  <div class="page-hero"><div class="wrap" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;">
+    <div>
+      <button class="back-home" onclick="go('home')">← กลับหน้าหลัก</button>
+      <div class="eyebrow-line">📚 บทเรียน</div>
+      <h1>บทเรียนทั้งหมด</h1>
+      <p>เนื้อหาบทเรียนที่ผู้ดูแลเว็บไซต์จัดเตรียมไว้ให้นักเรียนและครู</p>
+    </div>
+    <button class="btn btn-primary staff-only" id="btnAddLesson" onclick="openAddLesson()">+ เพิ่มบทเรียน</button>
+  </div></div>
+  <div class="wrap section">
+    <div class="grid-list" id="lessonsGrid"></div>
+  </div>
+</section>
+
+<!-- ============ ADD LESSON MODAL ============ -->
+<div class="overlay" id="addLessonOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOverlay('addLessonOverlay')">✕</button>
+    <h2>เพิ่มบทเรียนใหม่</h2>
+    <div class="sub">บทเรียนของคุณจะแสดงในหน้านี้ทันที</div>
+    <div class="field"><label>ชื่อบทเรียน</label><input id="al-title" placeholder="เช่น เทคนิคการอ่านจับใจความ"></div>
+    <div class="field"><label>หมวดหมู่</label><input id="al-tag" placeholder="เช่น ภาษาไทย"></div>
+    <div class="field"><label>คำอธิบายเนื้อหา</label>
+      <textarea id="al-desc" rows="4" placeholder="อธิบายเนื้อหาบทเรียนสั้นๆ" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;background:var(--paper);resize:vertical;"></textarea>
+    </div>
+    <div class="err" id="al-err">กรุณากรอกชื่อบทเรียนและคำอธิบาย</div>
+    <button class="btn btn-primary btn-block" onclick="addLessonUser()">บันทึกบทเรียน</button>
+  </div>
+</div>
+
+<!-- ============ EXERCISES ============ -->
+<section class="view" id="view-exercises">
+  <div class="page-hero"><div class="wrap" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;">
+    <div>
+      <button class="back-home" onclick="go('home')">← กลับหน้าหลัก</button>
+      <div class="eyebrow-line">📝 แบบฝึก</div>
+      <h1>แบบฝึกหัด</h1>
+      <p>ทำแบบฝึกหัดและตรวจสอบความเข้าใจของคุณได้ทันที</p>
+    </div>
+    <button class="btn btn-primary staff-only" id="btnAddExercise" onclick="openAddExercise()">+ เพิ่มแบบฝึก</button>
+  </div></div>
+  <div class="wrap section">
+    <div class="grid-list" id="exercisesGrid"></div>
+  </div>
+</section>
+
+<!-- ============ ADD EXERCISE MODAL ============ -->
+<div class="overlay" id="addExerciseOverlay">
+  <div class="modal" style="max-width:560px;">
+    <button class="modal-close" onclick="closeOverlay('addExerciseOverlay')">✕</button>
+    <h2>เพิ่มแบบฝึกใหม่</h2>
+    <div class="sub">สร้างชุดแบบฝึกได้หลายข้อในคราวเดียว</div>
+    <div class="field"><label>ชื่อแบบฝึก</label><input id="ae-title" placeholder="เช่น แบบฝึกคำศัพท์ ชุดที่ 1"></div>
+    <div class="field"><label>เวลาทำ (นาที) — ไม่บังคับ</label><input id="ae-timelimit" type="number" min="1" placeholder="เช่น 10 (เว้นว่างได้ถ้าไม่จับเวลา)"></div>
+    <div id="ae-questions-list"></div>
+    <button class="btn btn-ghost btn-sm" style="margin-bottom:14px;" onclick="addQuestionBlock()">+ เพิ่มคำถามอีกข้อ</button>
+    <div class="err" id="ae-err">กรุณากรอกคำถามและตัวเลือกให้ครบทุกข้อ</div>
+    <button class="btn btn-primary btn-block" onclick="addExerciseUser()">บันทึกแบบฝึก</button>
+  </div>
+</div>
+
+<!-- ============ PROMPTS ============ -->
+<section class="view" id="view-prompts">
+  <div class="page-hero"><div class="wrap" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;">
+    <div>
+      <button class="back-home" onclick="go('home')">← กลับหน้าหลัก</button>
+      <div class="eyebrow-line">✨ Prompt</div>
+      <h1>คลัง Prompt สำหรับการเรียนรู้</h1>
+      <p>คัดลอก Prompt ไปใช้กับ AI เพื่อช่วยการเรียนรู้ของคุณ</p>
+    </div>
+    <button class="btn btn-primary staff-only" id="btnAddPrompt" onclick="openAddPrompt()">+ เพิ่ม Prompt</button>
+  </div></div>
+  <div class="wrap section">
+    <div class="grid-list" id="promptsGrid"></div>
+  </div>
+</section>
+
+<!-- ============ ADD PROMPT MODAL ============ -->
+<div class="overlay" id="addPromptOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOverlay('addPromptOverlay')">✕</button>
+    <h2>เพิ่ม Prompt ใหม่</h2>
+    <div class="sub">Prompt ของคุณจะแสดงในหน้านี้ทันที</div>
+    <div class="field"><label>ชื่อ Prompt</label><input id="ap-title" placeholder="เช่น ช่วยสรุปบทเรียน"></div>
+    <div class="field"><label>หมวดหมู่</label><input id="ap-tag" placeholder="เช่น สรุปเนื้อหา"></div>
+    <div class="field"><label>เนื้อหา Prompt</label>
+      <textarea id="ap-body" rows="5" placeholder="พิมพ์ข้อความ Prompt ที่นี่..." style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;background:var(--paper);resize:vertical;"></textarea>
+    </div>
+    <div class="err" id="ap-err">กรุณากรอกชื่อและเนื้อหา Prompt ให้ครบ</div>
+    <button class="btn btn-primary btn-block" onclick="addPrompt()">บันทึก Prompt</button>
+  </div>
+</div>
+
+<!-- ============ MEDIA ============ -->
+<section class="view" id="view-media">
+  <div class="page-hero"><div class="wrap" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;">
+    <div>
+      <button class="back-home" onclick="go('home')">← กลับหน้าหลัก</button>
+      <div class="eyebrow-line">🎓 สื่อการเรียนรู้</div>
+      <h1>สื่อการเรียนรู้</h1>
+      <p>วิดีโอ เอกสาร รูปภาพ และลิงก์ที่เป็นประโยชน์ต่อการเรียน</p>
+    </div>
+    <button class="btn btn-primary staff-only" id="btnAddMedia" onclick="openAddMedia()">+ เพิ่มสื่อ</button>
+  </div></div>
+  <div class="wrap section">
+    <div class="grid-list" id="mediaGrid"></div>
+  </div>
+</section>
+
+<!-- ============ ADD MEDIA MODAL ============ -->
+<div class="overlay" id="addMediaOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOverlay('addMediaOverlay')">✕</button>
+    <h2>เพิ่มสื่อการเรียนรู้ใหม่</h2>
+    <div class="sub">สื่อของคุณจะแสดงในหน้านี้ทันที</div>
+    <div class="field"><label>ชื่อสื่อ</label><input id="am-title" placeholder="เช่น วิดีโอสอนไวยากรณ์"></div>
+    <div class="field"><label>ประเภท</label>
+      <select id="am-type">
+        <option>วิดีโอ</option><option>PDF</option><option>รูปภาพ</option><option>เอกสาร</option><option>ลิงก์เว็บไซต์</option>
+      </select>
+    </div>
+    <div class="err" id="am-err">กรุณากรอกชื่อสื่อ</div>
+    <button class="btn btn-primary btn-block" onclick="addMediaUser()">บันทึกสื่อ</button>
+  </div>
+</div>
+
+<!-- ============ LEADERBOARD ============ -->
+<section class="view" id="view-leaderboard">
+  <div class="page-hero"><div class="wrap">
+    <button class="back-home" onclick="go('home')">← กลับหน้าหลัก</button>
+    <div class="eyebrow-line">🏆 กระดานผู้นำ</div>
+    <h1>อันดับแต้มสะสม</h1>
+    <p>สะสมแต้มจากการทำแบบฝึกหัด ยิ่งทำเยอะ ยิ่งได้แต้มเยอะ อัปเดตสดทันที</p>
+  </div></div>
+  <div class="wrap section" style="max-width:640px;">
+    <div class="panel">
+      <table><thead><tr><th style="width:50px;">อันดับ</th><th>ชื่อ</th><th style="text-align:right;">แต้มสะสม</th></tr></thead>
+      <tbody id="leaderboardBody"><tr><td colspan="3" class="empty">กำลังโหลด...</td></tr></tbody></table>
+    </div>
+    <div class="panel">
+      <h3>ระดับป้ายเวลาเรียนออนไลน์</h3>
+      <p style="font-size:13.5px;color:var(--ink-soft);margin-bottom:14px;">เปิดเว็บและล็อกอินไว้สะสมเวลา ครบตามกำหนดจะได้ป้ายติดชื่อถาวร</p>
+      <div id="badgeTierList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROFILE ============ -->
+<section class="view" id="view-profile">
+  <div class="page-hero"><div class="wrap">
+    <button class="back-home" onclick="go('home')">← กลับหน้าหลัก</button>
+    <div class="eyebrow-line">โปรไฟล์ของฉัน</div>
+    <h1 id="profileHello">โปรไฟล์</h1>
+    <p>ดูและแก้ไขข้อมูลส่วนตัวของคุณ</p>
+  </div></div>
+  <div class="wrap section" style="max-width:640px;">
+    <div class="panel">
+      <div class="avatar-edit">
+        <div id="pf-avatar"></div>
+        <div>
+          <div class="btns">
+            <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('pf-avatar-file').click()">📷 เลือกรูปจากคลังภาพ</button>
+            <button class="btn btn-ghost btn-sm" type="button" id="pf-avatar-remove" onclick="removeAvatar()" style="display:none;">ลบรูป</button>
+          </div>
+          <div class="hint">รองรับ JPG / PNG / WebP ระบบจะย่อและครอปเป็นสี่เหลี่ยมจัตุรัสให้อัตโนมัติ</div>
+        </div>
+        <input type="file" id="pf-avatar-file" accept="image/*" hidden onchange="onAvatarPicked(this)">
+      </div>
+      <div id="profileBadges" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;"></div>
+      <div class="field-row">
+        <div class="field"><label>ชื่อ</label><input id="pf-fname"></div>
+        <div class="field"><label>นามสกุล</label><input id="pf-lname"></div>
+      </div>
+      <div class="field"><label>อีเมล</label><input id="pf-email" disabled style="opacity:.6;"></div>
+      <div class="field-row">
+        <div class="field"><label>จังหวัด</label><input id="pf-province"></div>
+        <div class="field"><label>อำเภอ</label><input id="pf-district"></div>
+      </div>
+      <div class="field"><label>โรงเรียน</label><input id="pf-school"></div>
+      <div class="field">
+        <label>ระดับชั้น</label>
+        <select id="pf-grade">
+          <option>ม.1</option><option>ม.2</option><option>ม.3</option><option>ม.4</option><option>ม.5</option><option>ม.6</option><option>ครูผู้สอน</option>
+        </select>
+      </div>
+      <div class="err" id="pf-err">กรุณากรอกชื่อและนามสกุล</div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">บันทึกการเปลี่ยนแปลง</button>
+    </div>
+
+    <div class="panel" id="pf-teacher-upgrade" style="display:none;">
+      <h3>ต้องการเป็นครู?</h3>
+      <p style="font-size:13.5px;color:var(--ink-soft);margin-bottom:14px;">ถ้าคุณมีอีเมลโรงเรียนหรือรหัสครูจากแอดมิน สามารถอัปเกรดบัญชีเป็นครูได้ที่นี่ทุกเมื่อ</p>
+      <button class="btn btn-ghost btn-sm" style="margin-bottom:12px;" onclick="tryClaimSchoolEmail()">ลองยืนยันด้วยอีเมลโรงเรียนของฉัน</button>
+      <div class="field"><label>หรือกรอกรหัสครู</label><input id="pf-teachercode" placeholder="เช่น TEACHER2026"></div>
+      <div class="err" id="pf-teacher-err">รหัสครูไม่ถูกต้อง หรือถูกใช้ไปแล้ว</div>
+      <button class="btn btn-primary btn-block" onclick="redeemCodeFromProfile()">ยืนยันเป็นครู</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STUDENT DASHBOARD ============ -->
+<section class="view" id="view-student">
+  <div class="page-hero"><div class="wrap">
+    <button class="back-home" onclick="go('home')">← กลับหน้าหลัก</button>
+    <div class="eyebrow-line">หน้านักเรียน</div>
+    <h1 id="studentHello">สวัสดี</h1>
+    <p>ติดตามการเรียน คะแนน และห้องเรียนของคุณได้ที่นี่</p>
+  </div></div>
+  <div class="wrap section">
+    <div class="stat-row">
+      <div class="stat"><div class="n" id="stStudied">0</div><div class="l">บทเรียนที่เรียนแล้ว</div></div>
+      <div class="stat"><div class="n" id="stScore">0%</div><div class="l">คะแนนเฉลี่ยแบบฝึก</div></div>
+      <div class="stat"><div class="n" id="stRooms">0</div><div class="l">ห้องเรียนที่เข้าร่วม</div></div>
+      <div class="stat"><div class="n">4</div><div class="l">เมนูที่ใช้งานได้</div></div>
+    </div>
+    <div class="panel">
+      <h3>ความก้าวหน้าในการเรียน</h3>
+      <div id="progressList"></div>
+    </div>
+    <div class="panel">
+      <h3>ประวัติการทำแบบฝึก</h3>
+      <table><thead><tr><th>แบบฝึก</th><th>คะแนน</th><th>วันที่ทำ</th></tr></thead>
+      <tbody id="myScoresBody"><tr><td colspan="3" class="empty">กำลังโหลด...</td></tr></tbody></table>
+    </div>
+    <div class="panel">
+      <h3>เข้าร่วมห้องเรียน</h3>
+      <div class="inline-form">
+        <input id="joinCode" placeholder="กรอกรหัสห้องเรียน">
+        <button class="btn btn-primary btn-sm" onclick="joinClassroom()">เข้าร่วม</button>
+      </div>
+      <div id="myRooms" style="margin-top:10px;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TEACHER DASHBOARD ============ -->
+<section class="view" id="view-teacher">
+  <div class="page-hero"><div class="wrap">
+    <button class="back-home" onclick="go('home')">← กลับหน้าหลัก</button>
+    <div class="eyebrow-line">หน้าครู</div>
+    <h1 id="teacherHello">สวัสดี</h1>
+    <p>จัดการห้องเรียน มอบหมายแบบฝึก และติดตามนักเรียนของคุณ</p>
+  </div></div>
+  <div class="wrap section">
+    <div class="stat-row">
+      <div class="stat"><div class="n" id="tcRooms">0</div><div class="l">ห้องเรียนของฉัน</div></div>
+      <div class="stat"><div class="n" id="tcStudents">0</div><div class="l">นักเรียนทั้งหมด</div></div>
+      <div class="stat"><div class="n" id="tcLessons">0</div><div class="l">บทเรียนที่เพิ่ม</div></div>
+      <div class="stat"><div class="n" id="tcAssign">0</div><div class="l">แบบฝึกที่มอบหมาย</div></div>
+    </div>
+    <div class="panel">
+      <h3>สร้างห้องเรียนใหม่</h3>
+      <div class="inline-form">
+        <input id="roomName" placeholder="ชื่อห้องเรียน เช่น ม.6/1 เตรียมสอบ TGAT">
+        <button class="btn btn-primary btn-sm" onclick="createClassroom()">สร้างห้องเรียน</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>ห้องเรียนของฉัน</h3>
+      <table id="teacherRoomsTable"><thead><tr><th>ชื่อห้องเรียน</th><th>รหัสห้อง</th><th>นักเรียน</th><th></th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="panel">
+      <h3>คะแนนและคำตอบของนักเรียน</h3>
+      <table><thead><tr><th>นักเรียน</th><th>แบบฝึก</th><th>คะแนน</th><th>วันที่ทำ</th></tr></thead>
+      <tbody id="teacherScoresBody"><tr><td colspan="4" class="empty">กำลังโหลด...</td></tr></tbody></table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ADMIN DASHBOARD ============ -->
+<section class="view" id="view-admin">
+  <div class="page-hero"><div class="wrap">
+    <button class="back-home" onclick="go('home')">← กลับหน้าหลัก</button>
+    <div class="eyebrow-line">หน้าผู้ดูแลระบบ</div>
+    <h1 id="adminHello">แผงควบคุมผู้ดูแลระบบ</h1>
+    <p>จัดการเนื้อหาและผู้ใช้งานทั้งหมดของเว็บไซต์</p>
+  </div></div>
+  <div class="wrap section">
+    <div class="dash-shell">
+      <div class="dash-side" id="adminMenu">
+        <button data-a="dashboard" class="on">📊 แดชบอร์ด</button>
+        <button data-a="students">👩‍🎓 จัดการนักเรียน</button>
+        <button data-a="online">🟢 ผู้ใช้งานออนไลน์</button>
+        <button data-a="teachers">🧑‍🏫 จัดการครู</button>
+        <button data-a="verify">✅ ตรวจสอบครู</button>
+        <button data-a="codes">🔑 สร้างรหัสครู</button>
+        <button data-a="domains">🏫 โดเมนอีเมลโรงเรียน</button>
+        <button data-a="lessons">📚 จัดการบทเรียน</button>
+        <button data-a="exercises">📝 จัดการแบบฝึก</button>
+        <button data-a="prompts">✨ จัดการ Prompt</button>
+        <button data-a="media">🎓 จัดการสื่อการเรียนรู้</button>
+        <button data-a="rooms">🏫 จัดการห้องเรียน</button>
+        <button data-a="scores">📊 ดูคะแนน</button>
+        <button data-a="admins">🛡️ จัดการผู้ดูแลระบบ</button>
+      </div>
+      <div id="adminContent"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brand"><span class="brand-mark"></span> AI Learning Code</div>
+    <div>แพลตฟอร์มการเรียนรู้ยุคใหม่สำหรับนักเรียนและครู</div>
+  </div>
+</footer>
+
+<!-- ============ LOGIN MODAL ============ -->
+<div class="overlay" id="loginOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOverlay('loginOverlay')">✕</button>
+    <h2>เข้าสู่ระบบ</h2>
+    <div class="sub">ยินดีต้อนรับกลับสู่ AI Learning Code</div>
+    <div class="field"><label>อีเมล</label><input id="loginEmail" type="email" placeholder="you@email.com"></div>
+    <div class="field">
+      <label style="display:flex;justify-content:space-between;">รหัสผ่าน <button onclick="closeOverlay('loginOverlay');openForgotPassword();" style="background:none;border:none;color:var(--blue);font-weight:600;font-size:12.5px;">ลืมรหัสผ่าน?</button></label>
+      <input id="loginPass" type="password" placeholder="••••••••">
+    </div>
+    <div class="err" id="loginErr">อีเมลหรือรหัสผ่านไม่ถูกต้อง</div>
+    <button class="btn btn-primary btn-block" onclick="doLogin()">เข้าสู่ระบบ</button>
+    <div class="hint">เข้าสู่ระบบด้วยอีเมลและรหัสผ่านที่สมัครไว้จริง</div>
+    <div class="switch-line">ยังไม่มีบัญชี? <button onclick="closeOverlay('loginOverlay');openSignup()">สมัครสมาชิก</button></div>
+  </div>
+</div>
+
+<!-- ============ FORGOT PASSWORD MODAL ============ -->
+<div class="overlay" id="forgotOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOverlay('forgotOverlay')">✕</button>
+    <h2>ลืมรหัสผ่าน</h2>
+    <div class="sub">กรอกอีเมลที่ใช้สมัคร เราจะส่งลิงก์สำหรับตั้งรหัสผ่านใหม่ไปให้</div>
+    <div class="field"><label>อีเมล</label><input id="forgotEmail" type="email" placeholder="you@email.com"></div>
+    <div class="err" id="forgotErr">กรุณากรอกอีเมล</div>
+    <button class="btn btn-primary btn-block" onclick="sendPasswordReset()">ส่งลิงก์รีเซ็ตรหัสผ่าน</button>
+    <div class="switch-line">นึกรหัสผ่านได้แล้ว? <button onclick="closeOverlay('forgotOverlay');openLogin()">เข้าสู่ระบบ</button></div>
+  </div>
+</div>
+
+<!-- ============ SET NEW PASSWORD MODAL (opened automatically from reset-link email) ============ -->
+<div class="overlay" id="resetPasswordOverlay">
+  <div class="modal">
+    <h2>ตั้งรหัสผ่านใหม่</h2>
+    <div class="sub">กรอกรหัสผ่านใหม่ของคุณ</div>
+    <div class="field"><label>รหัสผ่านใหม่</label><input id="newPass1" type="password" placeholder="••••••••"></div>
+    <div class="field"><label>ยืนยันรหัสผ่านใหม่</label><input id="newPass2" type="password" placeholder="••••••••"></div>
+    <div class="err" id="resetPassErr">รหัสผ่านไม่ตรงกัน หรือสั้นเกินไป (อย่างน้อย 6 ตัวอักษร)</div>
+    <button class="btn btn-primary btn-block" onclick="submitNewPassword()">บันทึกรหัสผ่านใหม่</button>
+  </div>
+</div>
+
+<!-- ============ CLASSROOM QR MODAL ============ -->
+<div class="overlay" id="qrOverlay">
+  <div class="modal" style="text-align:center;">
+    <button class="modal-close" onclick="closeOverlay('qrOverlay')">✕</button>
+    <h2 id="qrRoomName">ห้องเรียน</h2>
+    <div class="sub">ให้นักเรียนสแกน QR นี้ (หรืออ่านรหัสด้านล่าง) แล้วไปกรอกที่เมนู "เข้าร่วมห้องเรียน" ในหน้าของตัวเอง</div>
+    <div style="background:var(--white);border-radius:16px;padding:16px;display:inline-block;margin:10px 0;">
+      <img id="qrImage" src="" alt="QR Code" width="220" height="220" style="display:block;">
+    </div>
+    <div class="code-tag" id="qrCodeText" style="font-size:20px;padding:10px 20px;display:inline-block;margin-top:6px;"></div>
+  </div>
+</div>
+
+<!-- ============ SIGNUP MODAL ============ -->
+<div class="overlay" id="signupOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSignup()">✕</button>
+
+    <div id="su-step1">
+      <h2>สมัครสมาชิก</h2>
+      <div class="sub">คุณคือ...</div>
+      <div class="role-pick">
+        <button class="role-opt" onclick="pickRole('student')"><div class="ic">🎓</div><strong>นักเรียน</strong></button>
+        <button class="role-opt" onclick="pickRole('teacher')"><div class="ic">🧑‍🏫</div><strong>ครู</strong></button>
+      </div>
+      <div class="switch-line">มีบัญชีอยู่แล้ว? <button onclick="closeOverlay('signupOverlay');openLogin()">เข้าสู่ระบบ</button></div>
+    </div>
+
+    <div id="su-step2" style="display:none;">
+      <div class="stepbar"><span class="on"></span><span class="on"></span><span></span></div>
+      <h2 id="su-step2-title">สมัครสมาชิก</h2>
+      <div class="sub">กรอกข้อมูลให้ครบถ้วน</div>
+      <div class="field-row">
+        <div class="field"><label>ชื่อ</label><input id="su-fname"></div>
+        <div class="field"><label>นามสกุล</label><input id="su-lname"></div>
+      </div>
+      <div class="field"><label>อีเมล</label><input id="su-email" type="email" placeholder="you@email.com"></div>
+      <div class="hint" id="su-teacher-email-hint" style="text-align:left;margin-top:-8px;margin-bottom:14px;display:none;">💡 ใช้อีเมลโรงเรียน (ลงท้ายด้วย <b>.ac.th</b>) จะได้สถานะครูทันที โดยไม่ต้องกรอกรหัสครู — ถ้าใช้อีเมลส่วนตัว ต้องกรอกรหัสครูและรอแอดมินตรวจสอบก่อน</div>
+      <div class="field-row">
+        <div class="field"><label>จังหวัด</label><input id="su-province"></div>
+        <div class="field"><label>อำเภอ</label><input id="su-district"></div>
+      </div>
+      <div class="field"><label>โรงเรียน</label><input id="su-school" placeholder="ชื่อโรงเรียน (ต้องเป็นโรงเรียนที่ได้รับอนุญาต สำหรับครู)"></div>
+      <div class="field-row">
+        <div class="field"><label>ระดับชั้น</label>
+          <select id="su-grade">
+            <option>ม.1</option><option>ม.2</option><option>ม.3</option><option>ม.4</option><option>ม.5</option><option>ม.6</option><option>ครูผู้สอน</option>
+          </select>
+        </div>
+        <div class="field"><label>รหัสผ่าน</label><input id="su-pass" type="password"></div>
+      </div>
+      <div class="err" id="su-err2">กรุณากรอกข้อมูลให้ครบถ้วน</div>
+      <button class="btn btn-primary btn-block" onclick="submitProfile()">ถัดไป</button>
+    </div>
+
+    <div id="su-step4" style="display:none;">
+      <div class="stepbar"><span class="on"></span><span class="on"></span><span class="on"></span></div>
+      <h2>ยืนยันความเป็นครู</h2>
+      <div class="sub">ตรวจพบว่าคุณใช้อีเมลส่วนตัว จึงต้องกรอกรหัสครูที่ได้รับจากผู้ดูแลระบบ (สร้างจากหน้าแอดมิน → สร้างรหัสครู — ทดลองใช้รหัสเริ่มต้น <b>TEACHER2026</b>) หลังยืนยันแล้วบัญชีจะอยู่ในสถานะ "รอตรวจสอบ" จนกว่าแอดมินจะอนุมัติ</div>
+      <div class="field"><label>รหัสครู</label><input id="su-teachercode" placeholder="เช่น TEACHER2026"></div>
+      <div class="err" id="su-err4">รหัสครูไม่ถูกต้อง กรุณาติดต่อผู้ดูแลระบบ</div>
+      <button class="btn btn-primary btn-block" onclick="verifyTeacherCode()">ยืนยันและเข้าสู่ระบบ</button>
+    </div>
+
+    <div id="su-step5" style="display:none;text-align:center;">
+      <div style="font-size:44px;margin-bottom:10px;">🎉</div>
+      <h2>สมัครสมาชิกสำเร็จ</h2>
+      <div class="sub" id="su-successmsg">ยินดีต้อนรับสู่ AI Learning Code</div>
+      <button class="btn btn-primary btn-block" onclick="finishSignup()">ไปที่หน้าของฉัน</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= DATA (in-memory / mock) ================= */
+const lessons = [
+  // ===== TGAT1 รหัส 91 การสื่อสารภาษาอังกฤษ =====
+  {t:"TGAT1: ทักษะการพูด (Speaking Skill)", tag:"TGAT1 การสื่อสารภาษาอังกฤษ", mine:true, d:"Question-Response (การถามและตอบคำถาม) และ Short & Long Conversations (บทสนทนาสั้นและยาว)"},
+  {t:"TGAT1: ทักษะการอ่าน (Reading Skill)", tag:"TGAT1 การสื่อสารภาษาอังกฤษ", mine:true, d:"Text Completion (การเติมข้อความให้สมบูรณ์) และ Reading Comprehension (การอ่านจับใจความและวิเคราะห์เนื้อหา)"},
+
+  // ===== TGAT2 รหัส 92 การคิดอย่างมีเหตุผล =====
+  {t:"TGAT2: ความสามารถทางภาษา", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, d:"การสื่อความหมาย, การใช้ภาษา, การอ่าน, การเข้าใจภาษา"},
+  {t:"TGAT2: ความสามารถทางตัวเลข", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, d:"อนุกรมมิติ, การเปรียบเทียบเชิงปริมาณ (สดมภ์), ความเพียงพอของข้อมูล, โจทย์ปัญหา"},
+  {t:"TGAT2: ความสามารถทางมิติสัมพันธ์", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, d:"แบบพับกล่อง, แบบหาภาพต่าง, แบบหมุนภาพ 3 มิติ, แบบประกอบภาพ"},
+  {t:"TGAT2: ความสามารถทางเหตุผล", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, d:"อนุกรมภาพ, อุปมาอุปไมยภาพ, สรุปความ, วิเคราะห์ข้อความ"},
+
+  // ===== TGAT3 รหัส 93 สมรรถนะการทำงาน =====
+  {t:"TGAT3: การสร้างคุณค่าและนวัตกรรม", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, d:"การคิดเชิงวิเคราะห์ (Analytical Thinking), การแก้ไขปัญหาอย่างมืออาชีพ, ความคิดเชิงนวัตกรรม"},
+  {t:"TGAT3: การแก้ไขปัญหาที่ซับซ้อน", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, d:"การระบุปัญหา, การแสวงหาทางออก, การนำทางออกไปแก้ปัญหา, การประเมินทางออกเพื่อการพัฒนาปรับปรุง"},
+  {t:"TGAT3: การบริหารจัดการอารมณ์", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, d:"ความตระหนักรู้ตนเอง (Self-awareness), การควบคุมอารมณ์และบุคลิกภาพ, ความเข้าใจผู้อื่น"},
+  {t:"TGAT3: การเป็นพลเมืองที่มีส่วนร่วมของสังคม", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, d:"การมุ่งเน้นการบริการสังคม, จิตสำนึกและรับผิดชอบต่อสิ่งแวดล้อม, การสร้างสรรค์เพื่อประโยชน์ของท้องถิ่น"}
+];
+
+const exercises = [
+  {
+    t:"แบบฝึกคณิตศาสตร์ ม.ปลาย ชุดทดสอบ",
+    d:"10 ข้อ · เลือกตอบ · 10 นาที",
+    mine:true,
+    timeLimit:10,
+    q:[
+      {q:"3² + 4² มีค่าเท่ากับเท่าไร", c:["12","7","25","49"], a:2, explain:"3² = 9 และ 4² = 16 รวมกันได้ 9 + 16 = 25"},
+      {q:"ถ้า 2x + 5 = 15 แล้ว x มีค่าเท่ากับเท่าไร", c:["10","5","7","3"], a:1, explain:"2x = 15 - 5 = 10 ดังนั้น x = 10 ÷ 2 = 5"},
+      {q:"วงกลมรัศมี 7 หน่วย มีพื้นที่เท่าไร (ใช้ π ≈ 22/7)", c:["44 ตร.หน่วย","49 ตร.หน่วย","22 ตร.หน่วย","154 ตร.หน่วย"], a:3, explain:"A = πr² = 22/7 × 7 × 7 = 154"},
+      {q:"ผลรวมของมุมภายในรูปสามเหลี่ยมเท่ากับกี่องศา", c:["180 องศา","360 องศา","90 องศา","270 องศา"], a:0, explain:"สมบัติพื้นฐานของรูปสามเหลี่ยม มุมภายในรวมกันได้ 180 องศาเสมอ"},
+      {q:"ทอยลูกเต๋า 1 ลูก ความน่าจะเป็นที่จะได้เลขคู่คือเท่าไร", c:["1/3","1/2","1/6","2/3"], a:1, explain:"เลขคู่บนลูกเต๋าคือ 2, 4, 6 รวม 3 หน้า จาก 6 หน้า = 3/6 = 1/2"},
+      {q:"log₁₀(100) มีค่าเท่ากับเท่าไร", c:["10","100","1","2"], a:3, explain:"เพราะ 10² = 100 ดังนั้น log₁₀(100) = 2"},
+      {q:"เส้นตรง y = 2x + 3 มีความชัน (slope) เท่ากับเท่าไร", c:["3","-2","2","1/2"], a:2, explain:"สมการรูป y = mx + c ค่า m คือความชัน ในที่นี้ m = 2"},
+      {q:"สามเหลี่ยมมุมฉากมีด้านประกอบมุมฉากยาว 3 และ 4 หน่วย ด้านตรงข้ามมุมฉากยาวเท่าไร", c:["7 หน่วย","5 หน่วย","6 หน่วย","25 หน่วย"], a:1, explain:"ตามทฤษฎีบทพีทาโกรัส c² = 3² + 4² = 9+16 = 25 ดังนั้น c = 5"},
+      {q:"(x + 2)(x − 2) มีค่าเท่ากับเท่าไร", c:["x² − 4","x² + 4","x² − 2x − 4","x² + 2x − 4"], a:0, explain:"เป็นสูตรผลต่างกำลังสอง (a+b)(a-b) = a² − b² ในที่นี้ a=x, b=2 ได้ x²−4"},
+      {q:"ค่าเฉลี่ยเลขคณิตของ 4, 8, 6, 10, 7 เท่ากับเท่าไร", c:["35","8","7","6"], a:2, explain:"ผลรวม 4+8+6+10+7 = 35 หารด้วยจำนวนข้อมูล 5 ค่า ได้ 35 ÷ 5 = 7"}
+    ]
+  },
+  {
+    t:"TGAT1 ภาษาอังกฤษ ปี 66 ชุดที่ 1: Question-Response",
+    d:"10 ข้อ · เลือกตอบ",
+    mine:true,
+    timeLimit:null,
+    q:[
+      {q:"Do you usually talk on the phone?", c:["I called my mum this morning","I don't often talk to friends","No, I prefer texting","Yes, hardly ever"], a:2, explain:"ตอบคำถาม yes/no ด้วยการให้ทางเลือกที่ทำแทน สอดคล้องกับคำถามมากที่สุด"},
+      {q:"Why are you wearing a bandage?", c:["I have a bad stomach ache","I think it's too expensive","I was in a car accident","I'm going to a concert"], a:2, explain:"อธิบายสาเหตุของการบาดเจ็บที่ต้องพันผ้าพันแผล"},
+      {q:"Do you have these trainers in a 10?", c:["It'll take more than 10 minutes","They all have left the gym","The next train leaves at 11","I'll take a look for you"], a:3, explain:"คำตอบของพนักงานขายเมื่อลูกค้าถามหาไซส์รองเท้า"},
+      {q:"How about going to the cinema?", c:["Are there any good films showing?","How long will the movie last?","I don't like horror films at all","I've already seen the movie"], a:0, explain:"คำถามตอบกลับที่เป็นธรรมชาติที่สุดเมื่อถูกชวนไปดูหนัง"},
+      {q:"Why did you change your hairstyle?", c:["I want to look at the model","It's more expensive to wear","I wash it in the evening","It's the latest fashion"], a:3, explain:"ให้เหตุผลของการเปลี่ยนทรงผม"},
+      {q:"What's your favorite tourist attraction?", c:["I often go sightseeing and take pictures","That would be the Eiffel Tower in Paris","Traveling alone is a lot of fun for me","Lots of tourists come to Bangkok"], a:1, explain:"ตอบคำถาม what โดยระบุสถานที่ท่องเที่ยวที่ชอบโดยตรง"},
+      {q:"How often do you clean your room?", c:["Every weekend","In the evening","Once or twice","For one hour"], a:0, explain:"คำถาม How often ต้องตอบด้วยความถี่"},
+      {q:"What does your father do?", c:["He does a good job","He's in an office","He's retired","He's fined"], a:1, explain:"What...do ถามเกี่ยวกับอาชีพ/ลักษณะงาน"},
+      {q:"How long does it take to travel from Chiang Mai to Bangkok?", c:["I recommend the overnight bus","About an hour by plane","Only 600 km","Seven"], a:1, explain:"How long ต้องตอบด้วยระยะเวลา"},
+      {q:"What's the matter with your friend?", c:["He is a friendly person","He likes science","He scored well","He lost his dog"], a:3, explain:"What's the matter ถามถึงปัญหา/สาเหตุความเศร้า"}
+    ]
+  },
+  {
+    t:"TGAT1 ภาษาอังกฤษ ปี 66 ชุดที่ 2: Short Conversations",
+    d:"10 ข้อ · เลือกตอบ",
+    mine:true,
+    timeLimit:null,
+    q:[
+      {q:"Joe: Hello Pete, how have you been? Long time no see!\nPete: ___(11)___. We haven't seen each other for months.", c:["It's been a long day!","It's a matter of luck!","What a surprise!","Time's up!"], a:2, explain:"คำอุทานที่เหมาะกับการเจอเพื่อนเก่าโดยไม่คาดคิด"},
+      {q:"Joe: I have an important event to organize next week. ___(12)___?", c:["How do you like it","Are you with me","How about you","Are you sure"], a:2, explain:"ถามกลับถึงอีกฝ่ายหลังเล่าเรื่องตัวเอง"},
+      {q:"Joe: Good for you. ___(13)___ catch up with each other sometime after next week?", c:["Why do we need to","Don't you want to","Do you agree to","Why don't we"], a:3, explain:"Why don't we... เป็นรูปประโยคชักชวน"},
+      {q:"Pete: Sure. ___(14)___ when you have finished your project.", c:["Give me a call","Catch me up","Make a line","Check out"], a:0, explain:"บอกให้โทรมาหาเมื่อว่างแล้ว"},
+      {q:"Student A: Excuse me. ___(15)___ where the university bookstore is?", c:["Are you also going","Could you tell me","Can I show you","Is this the way"], a:1, explain:"วิธีถามทางอย่างสุภาพ"},
+      {q:"Student B: Yes, it's that way. ___(16)___ Sun Street, and then turn right.", c:["Go one block to","Be careful of","Take off at","Move from"], a:0, explain:"การบอกทิศทางแบบเดินไปหนึ่งบล็อก"},
+      {q:"Student A: Thanks! ___(17)___, so I don't know my way around yet.", c:["It's not convenient to get around","I've already been there before","It's easy to follow directions","I'm here for the first time"], a:3, explain:"อธิบายเหตุผลที่ไม่รู้ทาง เพราะเพิ่งมาที่นี่ครั้งแรก"},
+      {q:"Doctor: Good afternoon. ___(18)___?", c:["What seems to be the problem","Do you have any allergies","Do you think you're ill","What's your diagnosis"], a:0, explain:"คำถามเปิดของแพทย์เมื่อพบผู้ป่วย"},
+      {q:"Doctor: ___(19)___ these symptoms?\nPatient: For a couple of days now.", c:["When did you start to have","How long have you had","Have you ever had","Do you still have"], a:1, explain:"How long have you had... ถามระยะเวลาที่มีอาการ สอดคล้องกับคำตอบ 'a couple of days'"},
+      {q:"Doctor: Drink lots of fluids and ___(20)___. You should feel better in a day or two.", c:["get plenty of rest","go to the hospital","take it seriously","enjoy yourself"], a:0, explain:"คำแนะนำมาตรฐานเมื่อเป็นไข้หวัด"}
+    ]
+  },
+  {
+    t:"TGAT1 ภาษาอังกฤษ ปี 66 ชุดที่ 3: Long Conversations",
+    d:"10 ข้อ · เลือกตอบ",
+    mine:true,
+    timeLimit:null,
+    q:[
+      {q:"Dan: ___(21)___ the new action series on Netflix?\nSarah: No, what's it about?", c:["How often do you watch","Have you seen","What about","Do you see"], a:1, explain:"Have you seen... ถามว่าเคยดูหรือยัง สอดคล้องกับคำตอบ 'No'"},
+      {q:"Dan: It's about a man sent to jail for killing his best friend.\nSarah: ___(22)___.", c:["It doesn't look interesting","It doesn't sound exciting","I like Korean series","I think it's funny"], a:1, explain:"sound ใช้กับสิ่งที่ได้ยินมา (เนื้อเรื่องที่เพิ่งฟัง) ไม่ใช่ look"},
+      {q:"Dan: He escapes from prison and searches for the real killer.\nSarah: ___(23)___?", c:["What channel is it on","What time is it on","How does it end","How is he doing"], a:2, explain:"Dan ตอบว่า 'I've only seen the first episode' แสดงว่าถูกถามเรื่องตอนจบ"},
+      {q:"Sarah: How many episodes are there?\nDan: ___(24)___.", c:["30 minutes each","Twelve in total","Every Sunday","Six hours"], a:1, explain:"ตอบจำนวนตอนทั้งหมด"},
+      {q:"Sarah: Do you mean Tom Hiddleston? I love Tom Hiddleston! ___(25)___.", c:["I want to see a Marvel movie!","He ruins every character","He's a marvelous actor!","I think I'll pass"], a:2, explain:"ชมนักแสดงในเชิงบวก เล่นคำ marvelous กับหนัง Marvel"},
+      {q:"Carol: Hello, is Susan there?\nSusan: ___(26)___.", c:["Just a moment, please","Please, call back later","My name is Susan","Speaking"], a:3, explain:"'Speaking' คือคำตอบมาตรฐานเมื่อรับสายแล้วเป็นคนที่ถูกถามหาเอง"},
+      {q:"Carol: Actually, can you ___(27)___?\nSusan: Sure. What is it?", c:["send me a favor","help me a favor","pay me a favor","do me a favor"], a:3, explain:"สำนวน 'do someone a favor' แปลว่าช่วยเหลือ"},
+      {q:"Carol: Can you ___(28)___ to the airport on Saturday?", c:["give me a hand","give me a lift","go for a drive","go for a ride"], a:1, explain:"'give someone a lift' แปลว่าไปส่ง/ขับรถไปส่ง"},
+      {q:"Susan: How about I ___(29)___ at eight a.m.?", c:["send you off","drive to you","pick you up","receive you"], a:2, explain:"'pick someone up' แปลว่าไปรับ"},
+      {q:"Carol: That sounds great. ___(30)___.", c:["What's the problem?","When can we meet?","I really appreciate it","I'll pass it on"], a:2, explain:"แสดงความขอบคุณที่เพื่อนช่วยไปส่งสนามบิน"}
+    ]
+  },
+  {
+    t:"TGAT1 ภาษาอังกฤษ ปี 66 ชุดที่ 4: Text Completion (Passage 1)",
+    d:"10 ข้อ · เลือกตอบ",
+    mine:true,
+    timeLimit:null,
+    q:[
+      {q:"It is my great ___(31)___ to congratulate you on receiving the scholarship.", c:["pleasure","pleasant","pleasing","pleased"], a:0, explain:"หลัง great ต้องเป็นคำนาม 'pleasure'"},
+      {q:"...the scholarship, ___(32)___ will enable you to enroll in Hogwarts College.", c:["which","what","when","who"], a:0, explain:"'which' ใช้แทนอนุประโยคขยาย scholarship (อมนุษย์)"},
+      {q:"The selection committee ___(33)___ your talents, achievements, and need for support.", c:["recognizes","reviews","reminds","returns"], a:0, explain:"คณะกรรมการ 'ตระหนักถึง/ยอมรับ' ความสามารถของผู้สมัคร"},
+      {q:"You can use the money to pay for ___(34)___ during registration.", c:["extracurricular activities","transportation costs","apartment rents","tuition and fees"], a:3, explain:"ทุนการศึกษามักใช้จ่ายค่าเล่าเรียนและค่าธรรมเนียมเป็นหลัก"},
+      {q:"We ___(35)___ a booklet that will guide you through the program.", c:["will have enclosed","will be enclosed","have enclosed","are enclosed"], a:2, explain:"ประธาน We เป็นผู้กระทำ (แนบเอกสาร) ต้องใช้กริยารูป active: have enclosed"},
+      {q:"I ___(36)___ warmly congratulate you once again.", c:["would appreciate","would be great","would agree to","would like to"], a:3, explain:"'would like to' + กริยาช่อง 1 แปลว่าอยากจะทำสิ่งนั้น"},
+      {q:"...and ___(37)___ you continued success throughout your college career.", c:["desire","prefer","hope","wish"], a:3, explain:"สำนวน 'wish someone success' เป็นการอวยพรมาตรฐาน"},
+      {q:"We ___(38)___ welcoming you as a student at Hogwarts College.", c:["look forward to","look up to","look after","look for"], a:0, explain:"'look forward to' แปลว่าตั้งตารอ"},
+      {q:"...that's ___(39)___ the amount of daily sugar intake recommended by WHO.", c:["three more than times","more three times than","more than three times","three than more times"], a:2, explain:"โครงสร้างเปรียบเทียบที่ถูกต้อง: more than + จำนวนเท่า + the amount"},
+      {q:"...consumes 25.5 teaspoons of sugar, ___(40)___ various campaigns to combat excessive sugar consumption.", c:["however","although","whereas","despite"], a:3, explain:"'despite' + นามวลี ใช้แสดงความขัดแย้งในประโยคเดียว"}
+    ]
+  },
+  {
+    t:"TGAT1 ภาษาอังกฤษ ปี 66 ชุดที่ 5: Text Completion (Passage 2) + Reading 1",
+    d:"10 ข้อ · เลือกตอบ",
+    mine:true,
+    timeLimit:null,
+    q:[
+      {q:"Consuming too much sugar can ___(41)___ the development of diabetes or fatty liver disease.", c:["succeed in","result from","depend on","lead to"], a:3, explain:"'lead to' แปลว่านำไปสู่ผลลัพธ์บางอย่าง"},
+      {q:"...health-promotion activities, lower-sugar recipes, and ___(42)___.", c:["more responsibility marketing","more responsible marketing","any responsibility marketing","any responsible marketing"], a:1, explain:"ต้องใช้คำคุณศัพท์ 'responsible' ขยายคำนาม marketing"},
+      {q:"The ministry targeted sugary drinks to limit ___(43)___ among Thais.", c:["harmful sugar consumption","food industry expansion","sweet tooth permission","bubble tea production"], a:0, explain:"สอดคล้องกับเนื้อหาทั้งย่อหน้าเรื่องลดการบริโภคน้ำตาลที่เป็นอันตราย"},
+      {q:"Thailand began taxing beverages ___(44)___ more than 6 grams of sugar per 100 ml.", c:["containing","contained","contains","contain"], a:0, explain:"Present participle 'containing' ขยายคำนาม beverages (มีน้ำตาลอยู่)"},
+      {q:"The tax is adjusted... to reduce sugar consumption and ___(45)___ the industrial sector to adjust gradually.", c:["to approve","to admit","to access","to allow"], a:3, explain:"'allow someone to do something' แปลว่าเปิดโอกาสให้ปรับตัว"},
+      {q:"What does the phrase 'over the moon' mean?", c:["Very stressed","Very pleased","Very amused","Very worried"], a:1, explain:"สำนวน 'over the moon' แปลว่าดีใจมาก"},
+      {q:"Where does Evelyn live?", c:["Liverpool","Bangkok","London","Tokyo"], a:0, explain:"ข้อความระบุว่า 'We've just moved to a bigger house... here in Liverpool'"},
+      {q:"Who does the word 'we' in the third paragraph refer to?", c:["Evelyn and Sandra","Evelyn and Dylan","Evelyn and Jack","Evelyn and Nina"], a:2, explain:"Jack คือสามีของ Evelyn ที่กล่าวถึงก่อนหน้าในเรื่องการตั้งครรภ์"},
+      {q:"Why will Evelyn travel to London this coming weekend?", c:["She wants to get her friends' tips for raising twins.","She has an appointment with Sandra and Nina.","She is slightly nervous about her pregnancy.","She was hired by a tutoring school there."], a:0, explain:"ข้อความระบุว่าต้องการคำแนะนำจาก Nina และ Dylan เรื่องเลี้ยงลูกแฝด"},
+      {q:"What can be inferred from the email?", c:["Evelyn's husband is not ready to be a parent.","Dylan and Nina are not friends of Sandra's.","Evelyn's pregnancy was unexpected.","Sandra is still working in Bangkok."], a:2, explain:"'We were so surprised' บ่งบอกว่าการตั้งครรภ์ไม่ได้วางแผนไว้ล่วงหน้า"}
+    ]
+  },
+  {
+    t:"TGAT1 ภาษาอังกฤษ ปี 66 ชุดที่ 6: Reading Comprehension (Passage 2-3)",
+    d:"10 ข้อ · เลือกตอบ",
+    mine:true,
+    timeLimit:null,
+    q:[
+      {q:"What kind of announcement is the text about Henry Norton?", c:["Organizational restructuring announcement","New employee announcement","Promotion announcement","Sales announcement"], a:2, explain:"เนื้อหาประกาศการเลื่อนตำแหน่งของ Henry Norton"},
+      {q:"Which word is closest in meaning to 'dedication'?", c:["Sincerity","Devotion","Patience","Faith"], a:1, explain:"'dedication' และ 'devotion' แปลว่าความทุ่มเท"},
+      {q:"What is NOT a reason for Henry Norton's success?", c:["He has demonstrated leadership potential.","He has increased the sales staff numbers.","He is an enthusiastic employee.","He has wide work experience."], a:1, explain:"เนื้อหากล่าวถึงการกระตุ้นให้ยอดขายเพิ่มขึ้น ไม่ได้พูดถึงการเพิ่มจำนวนพนักงานขาย"},
+      {q:"What is NOT a way the company honored Henry Norton's achievement?", c:["Arranged a party to celebrate his new position.","Wished him a bright future at the company.","Informed the staff of his promotion.","Gave him permission to relocate."], a:3, explain:"ไม่มีการกล่าวถึงการอนุญาตให้ย้ายที่อยู่ในเนื้อหาเลย"},
+      {q:"Why was Henry Norton promoted to a higher position?", c:["He rewarded his staff's contribution to increased sales.","He displayed qualities which helped increase company sales.","He organized a number of business projects.","He worked in the Singapore branch for around 9 years."], a:1, explain:"คุณสมบัติของเขาช่วยกระตุ้นยอดขายของทีม"},
+      {q:"Which word is closest in meaning to 'disruptive'?", c:["Disappointing","Troublesome","Greedy","Noisy"], a:1, explain:"'disruptive' แปลว่าก่อกวน/สร้างความวุ่นวาย ใกล้เคียงกับ troublesome"},
+      {q:"'the fear of being the unfortunate landing spot for their waste' means the staff and fans...", c:["are afraid that the seagulls will attack","are concerned about becoming dirty","are anxious about wasting their time","are worried about the birds' safety"], a:1, explain:"กลัวมูลนกตกใส่ตัว = กังวลว่าจะเลอะเทอะ"},
+      {q:"What is John's main duty?", c:["To supervise the grandstands and picnic area","To navigate fans across the Old Course","To control the birds of prey","To prepare lunch"], a:2, explain:"John เป็นผู้ควบคุมนกล่าเหยื่อเพื่อไล่นกนางนวล"},
+      {q:"Who or what does 'the unwanted visitors' refer to?", c:["The food-stealing people","The four birds of prey","The seagulls","The fans"], a:2, explain:"นกนางนวลคือผู้บุกรุกที่ไม่พึงประสงค์ในสนามกอล์ฟ"},
+      {q:"Why do the birds of prey NOT fly around the golf course during the match?", c:["They prefer to sit quietly on their handler's gloves.","They are trained to attract only unwanted visitors.","They come from Elite Falconry with a handler.","They do not hunt seagulls for food by nature."], a:3, explain:"เนื้อหาระบุว่านกนางนวลไม่ใช่อาหารตามธรรมชาติของนกล่าเหยื่อทั้ง 4 ชนิด"}
+    ]
+  }
+];
+
+
+const prompts = [
+  // ===== หมวด 1: วางแผนเตรียมสอบ =====
+  {t:"วางแผนเตรียมสอบ", tag:"วางแผนเตรียมสอบ", mine:true, body:"ช่วยสร้างแผนเตรียมสอบ TGAT ให้ฉัน โดยประเมินพื้นฐาน เวลา จุดอ่อน และคะแนนเป้าหมายก่อน"},
+  {t:"ประเมินพื้นฐาน", tag:"วางแผนเตรียมสอบ", mine:true, body:"สร้างแบบทดสอบเพื่อประเมินพื้นฐาน TGAT ของฉัน แล้ววิเคราะห์ผลอย่างละเอียด"},
+  {t:"วิเคราะห์จุดแข็ง", tag:"วางแผนเตรียมสอบ", mine:true, body:"จากผลการทำข้อสอบของฉัน วิเคราะห์ว่าฉันมีจุดแข็งด้านใดบ้าง"},
+  {t:"วิเคราะห์จุดอ่อน", tag:"วางแผนเตรียมสอบ", mine:true, body:"วิเคราะห์ข้อผิดพลาดของฉันและจัดอันดับจุดอ่อนจากเรื่องที่ควรแก้ไขเร่งด่วนที่สุด"},
+  {t:"ตั้งเป้าคะแนน", tag:"วางแผนเตรียมสอบ", mine:true, body:"ช่วยวางเป้าหมายคะแนน TGAT ให้เหมาะกับระดับปัจจุบันและเป้าหมายมหาวิทยาลัยของฉัน"},
+  {t:"ตารางอ่านหนังสือ", tag:"วางแผนเตรียมสอบ", mine:true, body:"สร้างตารางอ่านหนังสือ TGAT รายวันให้ฉัน โดยคำนึงถึงเวลาว่างและระดับความสามารถ"},
+  {t:"แผน 7 วัน", tag:"วางแผนเตรียมสอบ", mine:true, body:"สร้างแผนเร่งรัดเตรียมสอบ TGAT ภายใน 7 วัน"},
+  {t:"แผน 30 วัน", tag:"วางแผนเตรียมสอบ", mine:true, body:"สร้างแผนเตรียมสอบ TGAT 30 วัน ตั้งแต่พื้นฐานจนถึงการทำ Mock Test"},
+  {t:"แผน 60 วัน", tag:"วางแผนเตรียมสอบ", mine:true, body:"สร้างแผนเตรียม TGAT 60 วัน พร้อมเป้าหมายการเรียนในแต่ละสัปดาห์"},
+  {t:"แผน 90 วัน", tag:"วางแผนเตรียมสอบ", mine:true, body:"สร้างแผนเตรียมสอบ TGAT 90 วัน พร้อมแบ่งเนื้อหาและเวลาฝึกอย่างเป็นระบบ"},
+  {t:"เรียนวันละ 30 นาที", tag:"วางแผนเตรียมสอบ", mine:true, body:"ฉันมีเวลาเรียนวันละ 30 นาที ช่วยจัดแผน TGAT ให้มีประสิทธิภาพที่สุด"},
+  {t:"เรียนวันละ 1 ชั่วโมง", tag:"วางแผนเตรียมสอบ", mine:true, body:"ฉันมีเวลาเรียนวันละ 1 ชั่วโมง ช่วยแบ่งเวลา TGAT1, TGAT2 และ TGAT3"},
+  {t:"เรียนสำหรับคนพื้นฐานน้อย", tag:"วางแผนเตรียมสอบ", mine:true, body:"สร้างหลักสูตร TGAT สำหรับคนที่มีพื้นฐานน้อยมาก โดยเริ่มตั้งแต่พื้นฐาน"},
+  {t:"เรียนสำหรับคนพื้นฐานดี", tag:"วางแผนเตรียมสอบ", mine:true, body:"ฉันมีพื้นฐานดีแล้ว ช่วยออกแบบหลักสูตรเพื่อเพิ่มคะแนนจากระดับกลางไปสู่ระดับสูง"},
+  {t:"วิเคราะห์ความพร้อม", tag:"วางแผนเตรียมสอบ", mine:true, body:"จากผลการฝึกทั้งหมด ประเมินความพร้อมสอบ TGAT ของฉันเป็นเปอร์เซ็นต์ พร้อมเหตุผล"},
+  {t:"วิเคราะห์พัฒนาการ", tag:"วางแผนเตรียมสอบ", mine:true, body:"เปรียบเทียบคะแนนสอบของฉันแต่ละครั้งและแสดงพัฒนาการ"},
+  {t:"วางแผนก่อนสอบ", tag:"วางแผนเตรียมสอบ", mine:true, body:"ช่วยสร้างแผนการเตรียมตัวในช่วง 7 วันสุดท้ายก่อนสอบ TGAT"},
+  {t:"วางแผนวันสอบ", tag:"วางแผนเตรียมสอบ", mine:true, body:"สร้าง Checklist การเตรียมตัวสำหรับวันสอบ TGAT ตั้งแต่ตื่นนอนจนถึงเข้าสอบ"},
+  {t:"จัดลำดับความสำคัญ", tag:"วางแผนเตรียมสอบ", mine:true, body:"จากเนื้อหาทั้งหมดของ TGAT ช่วยจัดลำดับว่าเรื่องใดควรอ่านก่อนหลัง"},
+  {t:"แผนเฉพาะบุคคล", tag:"วางแผนเตรียมสอบ", mine:true, body:"ทำหน้าที่เป็น Personal Learning Coach และสร้างแผนเรียน TGAT เฉพาะบุคคลจากข้อมูลของฉัน"},
+
+  // ===== หมวด 2: TGAT1 การสื่อสารภาษาอังกฤษ =====
+  {t:"Vocabulary", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้างแบบฝึกคำศัพท์ภาษาอังกฤษสำหรับ TGAT1 จำนวน 10 ข้อ"},
+  {t:"ศัพท์พื้นฐาน", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สอนคำศัพท์สำคัญสำหรับ TGAT1 โดยแบ่งเป็นหมวดหมู่และมีตัวอย่างประโยค"},
+  {t:"ศัพท์ระดับกลาง", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้างชุดคำศัพท์ TGAT1 ระดับกลาง พร้อมแบบทดสอบ"},
+  {t:"ศัพท์ระดับสูง", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้างคำศัพท์ภาษาอังกฤษระดับยากที่ควรรู้สำหรับการทำข้อสอบ TGAT1"},
+  {t:"ทบทวนคำศัพท์", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"ทดสอบคำศัพท์ที่ฉันเรียนไปแล้วแบบ Spaced Repetition"},
+  {t:"Grammar", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สอน Grammar ที่จำเป็นสำหรับ TGAT1 ตั้งแต่พื้นฐานจนถึงระดับสูง"},
+  {t:"Tenses", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สอน Tenses ที่จำเป็นต่อการทำข้อสอบ พร้อมโจทย์ฝึก"},
+  {t:"Subject-Verb Agreement", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สอน Subject-Verb Agreement พร้อมสร้างโจทย์แนวข้อสอบ"},
+  {t:"Prepositions", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สอนการใช้ Prepositions ที่มักสร้างความสับสน พร้อมแบบฝึกหัด"},
+  {t:"Conjunctions", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สอนการใช้คำเชื่อมภาษาอังกฤษ พร้อมโจทย์เลือกคำตอบ"},
+  {t:"Conversation", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้างบทสนทนาภาษาอังกฤษแนว TGAT1 แล้วถามคำถามทีละข้อ"},
+  {t:"Situational English", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้างสถานการณ์ภาษาอังกฤษในชีวิตประจำวันและให้ฉันเลือกประโยคที่เหมาะสม"},
+  {t:"Reading", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้างบทความ Reading แนว TGAT1 พร้อมคำถาม 10 ข้อ"},
+  {t:"Main Idea", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สอนวิธีหา Main Idea จากบทความภาษาอังกฤษ พร้อมแบบฝึก"},
+  {t:"Supporting Details", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้างโจทย์ให้ฉันฝึกค้นหา Supporting Details"},
+  {t:"Inference", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้างโจทย์ Reading ที่ต้องใช้การอนุมานจากข้อมูลในบทความ"},
+  {t:"Tone", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้างโจทย์วิเคราะห์ Tone และ Attitude ของผู้เขียน"},
+  {t:"Vocabulary in Context", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้างโจทย์หาความหมายของคำศัพท์จากบริบท"},
+  {t:"Cloze Test", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้าง Cloze Test แนว TGAT1 พร้อมเฉลยและคำอธิบายหลังฉันตอบ"},
+  {t:"Error Detection", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้างโจทย์ค้นหาข้อผิดพลาดทาง Grammar และอธิบายสาเหตุ"},
+  {t:"Sentence Completion", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้างโจทย์เติมประโยคให้สมบูรณ์ โดยใช้บริบทช่วยตัดสินใจ"},
+  {t:"Paraphrasing", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สอนวิธีดูประโยคที่มีความหมายเหมือนกันและสร้างโจทย์ฝึก"},
+  {t:"Reading Speed", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"ฝึกฉันอ่านบทความภาษาอังกฤษให้เร็วขึ้นโดยยังจับใจความได้"},
+  {t:"เทคนิคตัดตัวเลือก", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สอนเทคนิคตัดตัวเลือกในข้อสอบภาษาอังกฤษเมื่อไม่รู้คำตอบ"},
+  {t:"Mock TGAT1", tag:"TGAT1 ภาษาอังกฤษ", mine:true, body:"สร้างข้อสอบจำลอง TGAT1 พร้อมจับเวลาและวิเคราะห์ผลหลังสอบ"},
+
+  // ===== หมวด 3: TGAT2 การคิดอย่างมีเหตุผล =====
+  {t:"Logical Reasoning", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์ Logical Reasoning แนว TGAT2 จำนวน 10 ข้อ"},
+  {t:"Numerical Reasoning", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์ Numerical Reasoning ที่เน้นการคิดวิเคราะห์"},
+  {t:"อนุกรมตัวเลข", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์อนุกรมตัวเลขตั้งแต่ง่ายไปยาก พร้อมให้ฉันหาความสัมพันธ์"},
+  {t:"อนุกรมรูปแบบ", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์หารูปแบบและความสัมพันธ์ของข้อมูล"},
+  {t:"ตารางข้อมูล", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างตารางข้อมูลแล้วตั้งคำถามให้ฉันวิเคราะห์"},
+  {t:"กราฟ", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์อ่านและวิเคราะห์กราฟแนว TGAT2"},
+  {t:"เปรียบเทียบข้อมูล", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์ที่ต้องเปรียบเทียบข้อมูลหลายชุดก่อนตอบ"},
+  {t:"วิเคราะห์เงื่อนไข", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์ที่มีเงื่อนไขหลายข้อและให้ฉันหาคำตอบที่เป็นไปได้"},
+  {t:"การจัดลำดับ", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์การจัดลำดับบุคคลหรือเหตุการณ์ตามเงื่อนไข"},
+  {t:"ความสัมพันธ์", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์หาความสัมพันธ์ระหว่างคำ แนวคิด หรือข้อมูล"},
+  {t:"อุปมาอุปไมย", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์อุปมาอุปไมยเพื่อฝึกการคิดเชิงสัมพันธ์"},
+  {t:"คณิตศาสตร์เชิงเหตุผล", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์คณิตศาสตร์ที่เน้นการใช้เหตุผลมากกว่าการจำสูตร"},
+  {t:"โจทย์หลายขั้นตอน", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์ที่ต้องใช้เหตุผลอย่างน้อย 3 ขั้นตอนในการหาคำตอบ"},
+  {t:"ฝึกคิดเร็ว", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์ TGAT2 แบบจับเวลาเพื่อฝึกการคิดเร็วและแม่น"},
+  {t:"ฝึกความแม่น", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้างโจทย์ TGAT2 ที่เน้นลดความผิดพลาดจากการอ่านโจทย์"},
+  {t:"วิเคราะห์ตัวเลือก", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สอนวิธีวิเคราะห์ตัวเลือกในโจทย์ TGAT2 ก่อนตัดสินใจตอบ"},
+  {t:"เทคนิคเดาคำตอบ", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สอนเทคนิคการตัดตัวเลือกเมื่อไม่สามารถหาคำตอบได้โดยตรง"},
+  {t:"วิเคราะห์ข้อผิด", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"จากโจทย์ที่ฉันตอบผิด ช่วยวิเคราะห์ว่าฉันพลาดตรงขั้นตอนใด"},
+  {t:"Adaptive TGAT2", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"ปรับระดับความยากของโจทย์ TGAT2 ตามคำตอบของฉันแบบอัตโนมัติ"},
+  {t:"Mock TGAT2", tag:"TGAT2 การคิดอย่างมีเหตุผล", mine:true, body:"สร้าง Mock Test TGAT2 พร้อมจับเวลาและวิเคราะห์คะแนนอย่างละเอียด"},
+
+  // ===== หมวด 4: TGAT3 สมรรถนะการทำงาน =====
+  {t:"การสร้างคุณค่า", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างสถานการณ์เกี่ยวกับการสร้างคุณค่าและนวัตกรรม แล้วให้ฉันตัดสินใจ"},
+  {t:"นวัตกรรม", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างสถานการณ์ปัญหาและให้ฉันเสนอแนวทางสร้างนวัตกรรมเพื่อแก้ปัญหา"},
+  {t:"แก้ปัญหาซับซ้อน", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างสถานการณ์ที่มีปัญหาหลายด้านและให้ฉันเลือกแนวทางแก้ไข"},
+  {t:"Decision Making", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างสถานการณ์ที่มีทางเลือกหลายทางและให้ฉันตัดสินใจพร้อมเหตุผล"},
+  {t:"Emotional Management", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างสถานการณ์เกี่ยวกับความเครียดและความกดดัน แล้วให้ฉันเลือกวิธีรับมือ"},
+  {t:"Conflict", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างสถานการณ์ความขัดแย้งในทีมและให้ฉันหาวิธีแก้ปัญหา"},
+  {t:"Teamwork", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างสถานการณ์การทำงานเป็นทีมที่มีสมาชิกเห็นต่างกัน"},
+  {t:"Leadership", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างสถานการณ์ที่ฉันต้องเป็นผู้นำและตัดสินใจแก้ปัญหา"},
+  {t:"Communication", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างสถานการณ์การสื่อสารที่อาจเกิดความเข้าใจผิด แล้วให้ฉันเลือกวิธีแก้ไข"},
+  {t:"Problem Solving", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างสถานการณ์ปัญหาในโรงเรียนหรือสังคมแล้วให้ฉันวางแผนแก้ไข"},
+  {t:"Creativity", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างปัญหาหนึ่งเรื่องและให้ฉันคิดวิธีแก้ไขอย่างสร้างสรรค์อย่างน้อย 3 วิธี"},
+  {t:"Social Responsibility", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างสถานการณ์เกี่ยวกับความรับผิดชอบต่อสังคมและให้ฉันตัดสินใจ"},
+  {t:"พลเมืองที่มีส่วนร่วม", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างสถานการณ์ที่เกี่ยวข้องกับการมีส่วนร่วมในชุมชนและสังคม"},
+  {t:"วิเคราะห์ผลกระทบ", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"ให้สถานการณ์หนึ่งเรื่อง แล้วให้ฉันวิเคราะห์ผลกระทบระยะสั้นและระยะยาว"},
+  {t:"Mock TGAT3", tag:"TGAT3 สมรรถนะการทำงาน", mine:true, body:"สร้างข้อสอบจำลอง TGAT3 พร้อมสถานการณ์สมจริงและวิเคราะห์รูปแบบการตัดสินใจของฉัน"},
+
+  // ===== หมวด 5: AI วิเคราะห์และพัฒนาการเรียนรู้ =====
+  {t:"AI Quiz", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"สร้าง Quiz แบบถามทีละข้อ ห้ามเฉลยจนกว่าฉันจะตอบ"},
+  {t:"AI Tutor", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"ทำหน้าที่เป็นติวเตอร์ส่วนตัว อธิบายจนกว่าฉันจะเข้าใจ"},
+  {t:"Socratic Tutor", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"สอนฉันด้วยวิธี Socratic โดยใช้คำถามนำแทนการบอกคำตอบทันที"},
+  {t:"Explain Like I'm 15", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"อธิบายเรื่องนี้ให้ฉันเข้าใจง่ายเหมือนกำลังสอนนักเรียนอายุ 15 ปี"},
+  {t:"สอนจากข้อผิดพลาด", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"นำข้อที่ฉันผิดมาสอนใหม่ แล้วสร้างโจทย์ที่คล้ายกันให้ทำอีกครั้ง"},
+  {t:"Error Log", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"สร้างระบบบันทึกข้อผิดพลาดของฉัน แบ่งเป็น ความรู้ไม่พอ อ่านโจทย์ผิด คิดผิด และบริหารเวลาไม่ดี"},
+  {t:"วิเคราะห์เวลาทำข้อสอบ", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"วิเคราะห์เวลาที่ฉันใช้ในแต่ละข้อและหาว่าฉันเสียเวลามากที่สุดกับโจทย์ประเภทใด"},
+  {t:"Spaced Repetition", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"สร้างระบบทบทวนเนื้อหาที่ฉันเรียนโดยใช้หลัก Spaced Repetition"},
+  {t:"Active Recall", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"เปลี่ยนเนื้อหานี้เป็นคำถาม Active Recall เพื่อให้ฉันทบทวนโดยไม่อ่านคำตอบ"},
+  {t:"Flashcards", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"สร้าง Flashcards สำหรับเนื้อหานี้ พร้อมทดสอบฉันทีละใบ"},
+  {t:"Mind Map", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"สรุปเนื้อหา TGAT เรื่องนี้เป็น Mind Map ที่แสดงความสัมพันธ์ของแนวคิด"},
+  {t:"สรุปก่อนสอบ", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"สรุปเรื่องนี้เป็น Cheat Sheet สำหรับทบทวนก่อนสอบ โดยเน้นสิ่งที่ต้องจำและเทคนิคทำโจทย์"},
+  {t:"วิเคราะห์ข้อสอบ", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"วิเคราะห์ข้อสอบที่ฉันทำทั้งหมดและหาว่าฉันมีรูปแบบการผิดแบบใด"},
+  {t:"Personalized Practice", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"จากจุดอ่อนทั้งหมดของฉัน สร้างชุดฝึกเฉพาะบุคคล 20 ข้อ"},
+  {t:"Adaptive Learning", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"ปรับเนื้อหาและระดับโจทย์ตามความสามารถของฉันแบบอัตโนมัติ"},
+  {t:"คะแนนจำลอง", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"คำนวณและวิเคราะห์แนวโน้มคะแนนจากผลการฝึกของฉัน โดยแสดงข้อจำกัดของการประมาณคะแนนด้วย"},
+  {t:"Motivation Coach", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"ทำหน้าที่เป็นโค้ชสร้างกำลังใจในการเตรียมสอบ โดยช่วยฉันวางเป้าหมายเล็ก ๆ และติดตามความก้าวหน้า"},
+  {t:"Study Reflection", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"หลังเรียนทุกครั้ง ให้ถามฉันว่าฉันเข้าใจอะไร ไม่เข้าใจอะไร และควรปรับปรุงอะไร"},
+  {t:"AI Study Coach รายวัน", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"ทุกครั้งที่ฉันเริ่มเรียน ให้สร้างภารกิจการเรียนประจำวัน 3-5 ภารกิจตามจุดอ่อนล่าสุดของฉัน"},
+  {t:"AI TGAT Learning Coach แบบครบวงจร", tag:"AI วิเคราะห์การเรียนรู้", mine:true, body:"ทำหน้าที่เป็น AI Learning Coach ส่วนตัวสำหรับการเตรียมสอบ TGAT ตั้งแต่เริ่มต้นจนถึงวันสอบ\n\nระบบต้องทำงานตามขั้นตอน:\n1. ประเมินระดับความรู้\n2. วิเคราะห์จุดแข็งและจุดอ่อน\n3. ตั้งเป้าหมายคะแนน\n4. สร้างแผนการเรียนเฉพาะบุคคล\n5. สอนเนื้อหา\n6. ให้ทำแบบฝึกหัด\n7. ตรวจคำตอบ\n8. วิเคราะห์ข้อผิดพลาด\n9. บันทึกหัวข้อที่ยังอ่อน\n10. ปรับระดับโจทย์อัตโนมัติ\n11. ทบทวนด้วย Active Recall\n12. ทบทวนด้วย Spaced Repetition\n13. จำลองการสอบ\n14. วิเคราะห์คะแนน\n15. วิเคราะห์การบริหารเวลา\n16. แนะนำหัวข้อที่ควรฝึกต่อ\n17. ปรับแผนการเรียนใหม่จากผลล่าสุด\n\nห้ามทำหน้าที่เพียงตอบคำถาม แต่ต้องทำให้ฉัน \"เข้าใจ → คิดเอง → ฝึก → แก้ข้อผิดพลาด → พัฒนาขึ้น\"\n\nทุกครั้งที่ฉันตอบผิด ให้พยายามระบุสาเหตุของความผิดพลาด และสร้างโจทย์ฝึกเฉพาะจุดให้ฉันใหม่\n\nเมื่อฉันทำแบบทดสอบเสร็จ ให้สร้างรายงาน: คะแนน, ความแม่นยำ, เวลาที่ใช้, จุดแข็ง, จุดอ่อน, เรื่องที่ผิดบ่อย, ประเภทข้อผิดพลาด, ระดับความพร้อม, สิ่งที่ควรฝึกต่อ, แผนการเรียนครั้งถัดไป\n\nเป้าหมายสูงสุดคือช่วยให้ฉันพัฒนาคะแนน TGAT พร้อมพัฒนาทักษะการคิด วิเคราะห์ การแก้ปัญหา และการเรียนรู้ด้วยตนเอง"}
+];
+
+const media = [];
+
+/* ================= SUPABASE CLIENT ================= */
+let sb = null;
+try{
+  sb = window.supabase.createClient(
+    "https://lpsebdnrcdziiwyrmxfw.supabase.co",
+    "sb_publishable_P9LRw_yEs61SfXhwvNDPPA_OpCcFSYO"
+  );
+}catch(e){
+  console.error('Supabase client failed to load — check network/ad-block:', e);
+}
+
+/* ================= STATE ================= */
+let state = {
+  currentUser:null,           // {id, email, role, teacherStatus, fname, lname, province, district, school, grade}
+  pendingSignup:null,         // in-progress signup form data (before account is created)
+  classrooms:[],              // {name, code, teacher, students:[]}  -- still local/mock, not in DB yet
+  myProgress:{studied:0, avgScore:0, rooms:0}
+};
+
+/* ================= NAV ================= */
+function go(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('#mainNav button').forEach(b=>b.classList.toggle('on', b.dataset.nav===name));
+  document.getElementById('mobileNav').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(name==='leaderboard') renderLeaderboard();
+}
+document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.nav)));
+function toggleMobileNav(){
+  const m=document.getElementById('mobileNav');
+  m.style.display = m.style.display==='none' ? 'block' : 'none';
+}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+/* ================= RENDER LISTS ================= */
+function renderLessons(){
+  document.getElementById('lessonsGrid').innerHTML = lessons.length ? lessons.map((l,i)=>`
+    <div class="item-card"><span class="badge">${escapeHtml(l.tag)}</span><h4>${escapeHtml(l.t)}</h4><p>${escapeHtml(l.d)}</p>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost btn-sm" onclick="viewLesson(${i})">เริ่มเรียน</button>
+      ${l.mine ? `<button class="btn btn-ghost btn-sm" style="color:#D64545;border-color:#F3C6C6;" onclick="deleteLesson(${i})">ลบ</button>` : ''}
+    </div></div>
+  `).join('') : `<div class="empty" style="grid-column:1/-1;">ยังไม่มีบทเรียน — กดปุ่ม "+ เพิ่มบทเรียน" ด้านบนเพื่อเริ่มต้น</div>`;
+}
+function renderExercises(){
+  document.getElementById('exercisesGrid').innerHTML = exercises.length ? exercises.map((e,i)=>`
+    <div class="item-card"><span class="badge">แบบฝึก</span><h4>${escapeHtml(e.t)}</h4><p>${escapeHtml(e.d)}</p>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost btn-sm" onclick="openQuiz(${i})">เริ่มทำแบบฝึก</button>
+      ${e.mine ? `<button class="btn btn-ghost btn-sm" style="color:#D64545;border-color:#F3C6C6;" onclick="deleteExercise(${i})">ลบ</button>` : ''}
+    </div></div>
+  `).join('') : `<div class="empty" style="grid-column:1/-1;">ยังไม่มีแบบฝึก — กดปุ่ม "+ เพิ่มแบบฝึก" ด้านบนเพื่อเริ่มต้น</div>`;
+}
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function openAddLesson(){
+  if(!requireStaffAuth()) return;
+  document.getElementById('al-title').value='';
+  document.getElementById('al-tag').value='';
+  document.getElementById('al-desc').value='';
+  document.getElementById('al-err').classList.remove('show');
+  document.getElementById('addLessonOverlay').classList.add('active');
+}
+function addLessonUser(){
+  const t=document.getElementById('al-title').value.trim();
+  const tag=document.getElementById('al-tag').value.trim()||'ของฉัน';
+  const d=document.getElementById('al-desc').value.trim();
+  if(!t || !d){ document.getElementById('al-err').classList.add('show'); return; }
+  lessons.unshift({t, tag, d, mine:true});
+  renderLessons();
+  closeOverlay('addLessonOverlay');
+  toast('เพิ่มบทเรียนสำเร็จ');
+}
+function deleteLesson(i){ lessons.splice(i,1); renderLessons(); toast('ลบบทเรียนแล้ว'); }
+
+let aeQuestionCount = 0;
+function questionBlockHtml(n){
+  return `<div class="panel qblock" id="ae-block-${n}" style="padding:16px;margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <strong style="font-size:13.5px;color:var(--heading);">ข้อที่ ${n+1}</strong>
+      <button class="btn btn-ghost btn-sm" style="color:#D64545;border-color:#F3C6C6;" onclick="removeQuestionBlock(${n})">ลบข้อนี้</button>
+    </div>
+    <div class="field"><label>คำถาม</label><input id="ae-q-${n}" placeholder="พิมพ์คำถาม"></div>
+    <div class="field-row">
+      <div class="field"><label>ตัวเลือกที่ 1</label><input id="ae-c0-${n}" placeholder="ตัวเลือก 1"></div>
+      <div class="field"><label>ตัวเลือกที่ 2</label><input id="ae-c1-${n}" placeholder="ตัวเลือก 2"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>ตัวเลือกที่ 3</label><input id="ae-c2-${n}" placeholder="ตัวเลือก 3"></div>
+      <div class="field"><label>ตัวเลือกที่ 4</label><input id="ae-c3-${n}" placeholder="ตัวเลือก 4"></div>
+    </div>
+    <div class="field"><label>ข้อที่ถูกต้อง</label>
+      <select id="ae-answer-${n}">
+        <option value="0">ตัวเลือกที่ 1</option>
+        <option value="1">ตัวเลือกที่ 2</option>
+        <option value="2">ตัวเลือกที่ 3</option>
+        <option value="3">ตัวเลือกที่ 4</option>
+      </select>
+    </div>
+    <div class="field" style="margin-bottom:0;"><label>คำอธิบายเฉลย (ไม่บังคับ)</label><input id="ae-explain-${n}" placeholder="อธิบายว่าทำไมข้อนี้ถึงถูก"></div>
+  </div>`;
+}
+function addQuestionBlock(){
+  const n = aeQuestionCount++;
+  document.getElementById('ae-questions-list').insertAdjacentHTML('beforeend', questionBlockHtml(n));
+}
+function removeQuestionBlock(n){
+  const blocks = document.querySelectorAll('#ae-questions-list .qblock');
+  if(blocks.length<=1){ toast('ต้องมีอย่างน้อย 1 ข้อ'); return; }
+  const el = document.getElementById('ae-block-'+n);
+  if(el) el.remove();
+}
+function openAddExercise(){
+  if(!requireStaffAuth()) return;
+  document.getElementById('ae-title').value='';
+  document.getElementById('ae-timelimit').value='';
+  document.getElementById('ae-err').classList.remove('show');
+  document.getElementById('ae-questions-list').innerHTML='';
+  aeQuestionCount = 0;
+  addQuestionBlock();
+  document.getElementById('addExerciseOverlay').classList.add('active');
+}
+function addExerciseUser(){
+  const t=document.getElementById('ae-title').value.trim();
+  const timeLimitRaw = document.getElementById('ae-timelimit').value.trim();
+  const timeLimit = timeLimitRaw ? Math.max(1, parseInt(timeLimitRaw)) : null;
+  const blocks = [...document.querySelectorAll('#ae-questions-list .qblock')];
+  const qList = [];
+  let ok = true;
+  blocks.forEach(block=>{
+    const n = block.id.replace('ae-block-','');
+    const q = document.getElementById('ae-q-'+n).value.trim();
+    const c = [0,1,2,3].map(i=>document.getElementById(`ae-c${i}-${n}`).value.trim());
+    const a = parseInt(document.getElementById('ae-answer-'+n).value);
+    const explain = document.getElementById('ae-explain-'+n).value.trim();
+    if(!q || c.some(x=>!x)) ok = false;
+    qList.push({q, c, a, explain});
+  });
+  if(!t || !ok || qList.length===0){ document.getElementById('ae-err').classList.add('show'); return; }
+  document.getElementById('ae-err').classList.remove('show');
+  exercises.unshift({t, d:`${qList.length} ข้อ · เลือกตอบ${timeLimit?` · ${timeLimit} นาที`:''}`, mine:true, timeLimit, q:qList});
+  renderExercises();
+  closeOverlay('addExerciseOverlay');
+  toast('เพิ่มแบบฝึกสำเร็จ');
+}
+function deleteExercise(i){ exercises.splice(i,1); renderExercises(); toast('ลบแบบฝึกแล้ว'); }
+
+function renderPrompts(){
+  document.getElementById('promptsGrid').innerHTML = prompts.length ? prompts.map((p,i)=>`
+    <div class="prompt-card"><span class="badge">${escapeHtml(p.tag)}</span><h4>${escapeHtml(p.t)}</h4>
+    <pre>${escapeHtml(p.body)}</pre>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="copy-btn" id="copy-${i}" onclick="copyPrompt(${i})">คัดลอก</button>
+      ${p.mine ? `<button class="copy-btn" style="background:transparent;color:#FF9B9B;" onclick="deletePrompt(${i})">ลบ</button>` : ''}
+    </div></div>
+  `).join('') : `<div class="empty" style="grid-column:1/-1;">ยังไม่มี Prompt — กดปุ่ม "+ เพิ่ม Prompt" ด้านบนเพื่อเริ่มต้น</div>`;
+}
+function openAddPrompt(){
+  if(!requireStaffAuth()) return;
+  document.getElementById('ap-title').value='';
+  document.getElementById('ap-tag').value='';
+  document.getElementById('ap-body').value='';
+  document.getElementById('ap-err').classList.remove('show');
+  document.getElementById('addPromptOverlay').classList.add('active');
+}
+function addPrompt(){
+  const t=document.getElementById('ap-title').value.trim();
+  const tag=document.getElementById('ap-tag').value.trim()||'ของฉัน';
+  const body=document.getElementById('ap-body').value.trim();
+  if(!t || !body){ document.getElementById('ap-err').classList.add('show'); return; }
+  prompts.unshift({t, tag, body, mine:true});
+  renderPrompts();
+  closeOverlay('addPromptOverlay');
+  toast('เพิ่ม Prompt สำเร็จ');
+}
+function deletePrompt(i){
+  prompts.splice(i,1);
+  renderPrompts();
+  toast('ลบ Prompt แล้ว');
+}
+function copyPrompt(i){
+  if(!requireAuth()) return;
+  const b=document.getElementById('copy-'+i);
+  navigator.clipboard?.writeText(prompts[i].body).catch(()=>{});
+  b.textContent='คัดลอกแล้ว ✓'; b.classList.add('done');
+  setTimeout(()=>{b.textContent='คัดลอก';b.classList.remove('done');},1800);
+}
+function renderMedia(){
+  document.getElementById('mediaGrid').innerHTML = media.length ? media.map((m,i)=>`
+    <div class="item-card"><span class="badge">${escapeHtml(m.type)}</span><h4>${escapeHtml(m.t)}</h4><p>${m.mine ? 'เพิ่มโดยคุณ' : 'เพิ่มโดยผู้ดูแลเว็บไซต์'}</p>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost btn-sm" onclick="viewMedia(${i})">เปิดดู</button>
+      ${m.mine ? `<button class="btn btn-ghost btn-sm" style="color:#D64545;border-color:#F3C6C6;" onclick="deleteMedia(${i})">ลบ</button>` : ''}
+    </div></div>
+  `).join('') : `<div class="empty" style="grid-column:1/-1;">ยังไม่มีสื่อการเรียนรู้ — กดปุ่ม "+ เพิ่มสื่อ" ด้านบนเพื่อเริ่มต้น</div>`;
+}
+function openAddMedia(){
+  if(!requireStaffAuth()) return;
+  document.getElementById('am-title').value='';
+  document.getElementById('am-type').value='วิดีโอ';
+  document.getElementById('am-err').classList.remove('show');
+  document.getElementById('addMediaOverlay').classList.add('active');
+}
+function addMediaUser(){
+  const t=document.getElementById('am-title').value.trim();
+  const type=document.getElementById('am-type').value;
+  if(!t){ document.getElementById('am-err').classList.add('show'); return; }
+  media.unshift({t, type, mine:true});
+  renderMedia();
+  closeOverlay('addMediaOverlay');
+  toast('เพิ่มสื่อสำเร็จ');
+}
+function deleteMedia(i){ media.splice(i,1); renderMedia(); toast('ลบสื่อแล้ว'); }
+
+/* ================= auth-gated content access ================= */
+function requireAuth(){
+  if(state.currentUser) return true;
+  toast('กรุณาสมัครสมาชิกหรือเข้าสู่ระบบก่อนเพื่อดูเนื้อหา');
+  openSignup();
+  return false;
+}
+function requireStaffAuth(){
+  const u = state.currentUser;
+  if(!u){ toast('กรุณาเข้าสู่ระบบด้วยบัญชีครูหรือแอดมินก่อน'); openLogin(); return false; }
+  if(u.role==='student'){ toast('เฉพาะครูและแอดมินเท่านั้นที่เพิ่มเนื้อหาได้'); return false; }
+  if(u.role==='teacher' && u.teacherStatus==='pending'){ toast('บัญชีครูของคุณยังรอแอดมินตรวจสอบและอนุมัติก่อน'); return false; }
+  return true;
+}
+function viewLesson(i){
+  if(!requireAuth()) return;
+  toast('เปิดบทเรียน: ' + lessons[i].t);
+}
+function viewMedia(i){
+  if(!requireAuth()) return;
+  toast('เปิดสื่อ: ' + media[i].t);
+}
+
+/* ================= QUIZ RUNNER (one question at a time, instant feedback, timer, streak) ================= */
+let quizState = null; // {exIndex, ex, qi, score, streak, maxStreak, answered, timerInterval, secondsLeft}
+
+function openQuiz(i){
+  if(!requireAuth()) return;
+  const ex = exercises[i];
+  quizState = { exIndex:i, ex, qi:0, score:0, streak:0, maxStreak:0, answered:false, timerInterval:null, secondsLeft: ex.timeLimit ? ex.timeLimit*60 : null };
+  document.getElementById('quizOverlay').classList.add('active');
+  renderQuizQuestion();
+  if(quizState.secondsLeft!=null) startQuizTimer();
+}
+function startQuizTimer(){
+  updateTimerDisplay();
+  quizState.timerInterval = setInterval(()=>{
+    quizState.secondsLeft--;
+    updateTimerDisplay();
+    if(quizState.secondsLeft<=0){
+      clearInterval(quizState.timerInterval);
+      finishQuiz();
+    }
+  }, 1000);
+}
+function updateTimerDisplay(){
+  const el = document.getElementById('quizTimer');
+  if(!el || quizState.secondsLeft==null) return;
+  const m = Math.floor(quizState.secondsLeft/60);
+  const s = quizState.secondsLeft%60;
+  el.textContent = `⏱ ${m}:${s.toString().padStart(2,'0')}`;
+  el.style.color = quizState.secondsLeft<=10 ? '#D64545' : '';
+}
+function renderQuizQuestion(){
+  const { ex, qi, score, streak } = quizState;
+  const q = ex.q[qi];
+  const total = ex.q.length;
+  quizState.answered = false;
+
+  const modal = document.getElementById('quizOverlay').querySelector('.modal');
+  modal.innerHTML = `
+    <button class="modal-close" onclick="closeQuiz()">✕</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <span style="font-size:12.5px;color:var(--ink-soft);font-weight:600;">ข้อ ${qi+1}/${total}</span>
+      <div style="display:flex;gap:10px;align-items:center;">
+        ${streak>=2 ? `<span style="font-size:12.5px;font-weight:700;color:#C9822B;">🔥 ${streak} ติดกัน</span>` : ''}
+        ${quizState.secondsLeft!=null ? `<span id="quizTimer" style="font-size:12.5px;font-weight:700;"></span>` : ''}
+      </div>
+    </div>
+    <div class="progress-bar" style="margin-bottom:18px;"><i style="width:${(qi/total)*100}%;"></i></div>
+    <h2 style="font-size:17px;margin-bottom:16px;">${escapeHtml(q.q)}</h2>
+    <div id="quizOptions">
+      ${q.c.map((c,ci)=>`<label class="opt" id="qopt${ci}" onclick="selectQuizAnswer(${ci})" style="cursor:pointer;">${escapeHtml(c)}</label>`).join('')}
+    </div>
+    <div id="quizExplain" style="display:none;background:var(--lavender-soft);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--heading);margin-top:14px;"></div>
+    <button class="btn btn-primary btn-block" id="quizNextBtn" style="margin-top:18px;display:none;" onclick="nextQuizQuestion()">ข้อถัดไป</button>
+  `;
+  if(quizState.secondsLeft!=null) updateTimerDisplay();
+}
+function selectQuizAnswer(ci){
+  if(quizState.answered) return;
+  quizState.answered = true;
+  const { ex, qi } = quizState;
+  const q = ex.q[qi];
+  const correct = ci===q.a;
+
+  q.c.forEach((c,i)=>{
+    const el = document.getElementById('qopt'+i);
+    if(i===q.a) el.classList.add('correct');
+    else if(i===ci) el.classList.add('wrong');
+  });
+
+  if(correct){
+    quizState.score++;
+    quizState.streak++;
+    quizState.maxStreak = Math.max(quizState.maxStreak, quizState.streak);
+  }else{
+    quizState.streak = 0;
+  }
+
+  if(q.explain){
+    const box = document.getElementById('quizExplain');
+    box.style.display = 'block';
+    box.textContent = (correct ? '✅ ถูกต้อง! ' : '❌ ไม่ถูกต้อง — ') + q.explain;
+  }
+  const nextBtn = document.getElementById('quizNextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (qi+1 >= ex.q.length) ? 'ดูผลคะแนน' : 'ข้อถัดไป';
+}
+function nextQuizQuestion(){
+  quizState.qi++;
+  if(quizState.qi >= quizState.ex.q.length){
+    if(quizState.timerInterval) clearInterval(quizState.timerInterval);
+    finishQuiz();
+  }else{
+    renderQuizQuestion();
+  }
+}
+function finishQuiz(){
+  if(quizState.timerInterval) clearInterval(quizState.timerInterval);
+  const { ex, score, maxStreak } = quizState;
+  const total = ex.q.length;
+  const pct = total>0 ? Math.round(score/total*100) : 0;
+  const passed = pct >= 50;
+
+  state.myProgress.avgScore = Math.round((state.myProgress.avgScore + pct)/2);
+  state.myProgress.studied++;
+  saveExerciseAttempt(ex.t, score, total, pct);
+
+  const modal = document.getElementById('quizOverlay').querySelector('.modal');
+  modal.innerHTML = `
+    <button class="modal-close" onclick="closeQuiz()">✕</button>
+    <div style="text-align:center;">
+      <div style="font-size:44px;margin-bottom:6px;">${passed ? '🎉' : '💪'}</div>
+      <h2>${passed ? 'เยี่ยมมาก!' : 'เกือบแล้ว ลองอีกครั้ง!'}</h2>
+      <div style="font-family:'Kanit',sans-serif;font-size:36px;font-weight:800;color:${passed?'#0F9D6C':'var(--navy)'};margin:10px 0;">${score}/${total}</div>
+      <p style="color:var(--ink-soft);font-size:13.5px;margin-bottom:6px;">คะแนน ${pct}%</p>
+      ${maxStreak>=2 ? `<p style="color:#C9822B;font-size:13.5px;font-weight:600;margin-bottom:18px;">🔥 ตอบถูกติดกันสูงสุด ${maxStreak} ข้อ</p>` : '<div style="margin-bottom:18px;"></div>'}
+      <button class="btn btn-primary btn-block" onclick="closeQuiz()">เสร็จสิ้น</button>
+    </div>
+  `;
+
+  if(passed){
+    fireConfetti();
+    broadcastActivity(`🎉 มีคนทำแบบฝึก "${ex.t}" สำเร็จ! (${score}/${total})`);
+  }
+}
+function closeQuiz(){
+  if(quizState && quizState.timerInterval) clearInterval(quizState.timerInterval);
+  quizState = null;
+  document.getElementById('quizOverlay').classList.remove('active');
+}
+async function saveExerciseAttempt(title, score, total, pct){
+  if(!sb || !state.currentUser) return; // not logged in or backend unavailable — skip silently
+  try{
+    await sb.from('exercise_attempts').insert({
+      user_id: state.currentUser.id,
+      exercise_title: title,
+      score, total, percent: pct
+    });
+  }catch(e){ console.error('save attempt failed', e); }
+}
+
+/* ================= CONFETTI CELEBRATION ================= */
+function fireConfetti(){
+  const colors = ['#2F5FE0','#5BB8F5','#C9BCF2','#6EE7C9','#FFC15E'];
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:500;overflow:hidden;';
+  document.body.appendChild(container);
+  const count = 80;
+  for(let i=0;i<count;i++){
+    const p = document.createElement('div');
+    const size = 6 + Math.random()*6;
+    const startX = Math.random()*100;
+    const drift = (Math.random()-0.5)*160;
+    const duration = 2.2 + Math.random()*1.4;
+    const delay = Math.random()*0.4;
+    const rotate = Math.random()*360;
+    const color = colors[Math.floor(Math.random()*colors.length)];
+    const shape = Math.random()>0.5 ? '50%' : '3px';
+    p.style.cssText = `position:absolute;top:-20px;left:${startX}%;width:${size}px;height:${size*0.6}px;
+      background:${color};border-radius:${shape};opacity:0;
+      transform:translateY(0) rotate(${rotate}deg);
+      animation:confetti-fall ${duration}s ease-in ${delay}s forwards;
+      --drift:${drift}px;`;
+    container.appendChild(p);
+  }
+  setTimeout(()=>container.remove(), 4200);
+}
+
+/* ================= LIVE ACTIVITY TICKER (Realtime broadcast) ================= */
+let activityChannel = null;
+let presenceChannel = null;
+let currentAdminTab = 'students';
+function broadcastActivity(message){
+  if(!activityChannel) return;
+  activityChannel.send({ type:'broadcast', event:'activity', payload:{ message } });
+  showTicker(message); // show it to the sender too, immediately
+}
+function showTicker(message){
+  let bar = document.getElementById('activityTicker');
+  if(!bar){
+    bar = document.createElement('div');
+    bar.id = 'activityTicker';
+    bar.className = 'activity-ticker';
+    document.body.appendChild(bar);
+  }
+  const item = document.createElement('div');
+  item.className = 'activity-ticker-item';
+  item.textContent = message;
+  bar.appendChild(item);
+  requestAnimationFrame(()=> item.classList.add('show'));
+  setTimeout(()=>{
+    item.classList.remove('show');
+    setTimeout(()=> item.remove(), 400);
+  }, 4200);
+}
+
+/* ================= LOGIN / SIGNUP MODALS ================= */
+function openLogin(){document.getElementById('loginOverlay').classList.add('active');}
+function openForgotPassword(){
+  document.getElementById('forgotEmail').value='';
+  document.getElementById('forgotErr').classList.remove('show');
+  document.getElementById('forgotOverlay').classList.add('active');
+}
+async function sendPasswordReset(){
+  if(!sb){ toast('เชื่อมต่อระบบไม่สำเร็จ กรุณาโหลดหน้าเว็บใหม่'); return; }
+  const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+  if(!email){ document.getElementById('forgotErr').textContent='กรุณากรอกอีเมล'; document.getElementById('forgotErr').classList.add('show'); return; }
+  const btn = document.querySelector('#forgotOverlay .btn-primary');
+  btn.disabled = true; btn.textContent = 'กำลังส่ง...';
+  const redirectTo = window.location.href.split('#')[0].split('?')[0];
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
+  btn.disabled = false; btn.textContent = 'ส่งลิงก์รีเซ็ตรหัสผ่าน';
+  if(error){
+    document.getElementById('forgotErr').textContent = 'ส่งไม่สำเร็จ: '+error.message;
+    document.getElementById('forgotErr').classList.add('show');
+    return;
+  }
+  document.getElementById('forgotErr').classList.remove('show');
+  closeOverlay('forgotOverlay');
+  toast('ส่งลิงก์รีเซ็ตรหัสผ่านไปที่อีเมลแล้ว เช็คกล่องจดหมาย (รวมถึง Junk/Spam)');
+}
+async function submitNewPassword(){
+  if(!sb) return;
+  const p1 = document.getElementById('newPass1').value;
+  const p2 = document.getElementById('newPass2').value;
+  if(!p1 || p1.length<6 || p1!==p2){ document.getElementById('resetPassErr').classList.add('show'); return; }
+  document.getElementById('resetPassErr').classList.remove('show');
+  const btn = document.querySelector('#resetPasswordOverlay .btn-primary');
+  btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+  const { error } = await sb.auth.updateUser({ password: p1 });
+  btn.disabled = false; btn.textContent = 'บันทึกรหัสผ่านใหม่';
+  if(error){
+    document.getElementById('resetPassErr').textContent = 'บันทึกไม่สำเร็จ: '+error.message;
+    document.getElementById('resetPassErr').classList.add('show');
+    return;
+  }
+  closeOverlay('resetPasswordOverlay');
+  toast('ตั้งรหัสผ่านใหม่สำเร็จ');
+  await applyLoggedInUser();
+}
+function openSignup(){
+  resetSignup();
+  document.getElementById('signupOverlay').classList.add('active');
+}
+function closeOverlay(id){document.getElementById(id).classList.remove('active');}
+function closeSignup(){
+  const step4Open = document.getElementById('su-step4').style.display==='block';
+  if(step4Open){
+    const ok = confirm('บัญชีของคุณถูกสร้างแล้ว แต่ยังไม่ได้กรอกรหัสครู\n\nถ้าปิดตอนนี้ บัญชีจะอยู่ในสถานะ "นักเรียน" ไปก่อน (เข้าไปกรอกรหัสครูเพื่ออัปเกรดเป็นครูภายหลังได้จากหน้าโปรไฟล์)\n\nต้องการปิดหน้าต่างนี้ใช่ไหม?');
+    if(!ok) return;
+  }
+  closeOverlay('signupOverlay');
+}
+function resetSignup(){
+  state.pendingSignup=null;
+  ['su-step1','su-step2','su-step4','su-step5'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('su-step1').style.display='block';
+  document.getElementById('su-fname').value=document.getElementById('su-lname').value=
+  document.getElementById('su-email').value=document.getElementById('su-province').value=
+  document.getElementById('su-district').value=document.getElementById('su-school').value=
+  document.getElementById('su-pass').value=document.getElementById('su-teachercode').value='';
+}
+function pickRole(role){
+  state.pendingSignup={role};
+  document.getElementById('su-step1').style.display='none';
+  document.getElementById('su-step2').style.display='block';
+  document.getElementById('su-step2-title').textContent = role==='teacher' ? 'สมัครสมาชิก (ครู)' : 'สมัครสมาชิก (นักเรียน)';
+  document.getElementById('su-teacher-email-hint').style.display = role==='teacher' ? 'block' : 'none';
+}
+async function submitProfile(){
+  if(!sb){ toast('เชื่อมต่อระบบไม่สำเร็จ กรุณาโหลดหน้าเว็บใหม่หรือเช็คอินเทอร์เน็ต'); return; }
+  const req = ['su-fname','su-lname','su-email','su-province','su-district','su-school','su-pass'];
+  const vals = {};
+  let ok=true;
+  req.forEach(id=>{ const v=document.getElementById(id).value.trim(); vals[id]=v; if(!v) ok=false; });
+  if(!ok){ document.getElementById('su-err2').classList.add('show'); return; }
+  document.getElementById('su-err2').classList.remove('show');
+  Object.assign(state.pendingSignup,{
+    fname:vals['su-fname'], lname:vals['su-lname'], email:vals['su-email'],
+    province:vals['su-province'], district:vals['su-district'], school:vals['su-school'],
+    grade:document.getElementById('su-grade').value, pass:vals['su-pass']
+  });
+
+  const btn = document.querySelector('#su-step2 .btn-primary');
+  btn.disabled = true; btn.textContent = 'กำลังสมัคร...';
+
+  const p = state.pendingSignup;
+  const { data, error } = await sb.auth.signUp({ email: p.email, password: p.pass });
+  if(error){
+    btn.disabled = false; btn.textContent = 'ถัดไป';
+    document.getElementById('su-err2').textContent = error.message.includes('already') ? 'อีเมลนี้ถูกใช้สมัครแล้ว' : 'สมัครไม่สำเร็จ: '+error.message;
+    document.getElementById('su-err2').classList.add('show');
+    return;
+  }
+  const { error: profileErr } = await sb.from('profiles').insert({
+    id: data.user.id,
+    first_name: p.fname, last_name: p.lname,
+    province: p.province, district: p.district, school: p.school, grade: p.grade
+  });
+  if(profileErr){
+    btn.disabled = false; btn.textContent = 'ถัดไป';
+    document.getElementById('su-err2').textContent = 'บันทึกโปรไฟล์ไม่สำเร็จ: '+profileErr.message;
+    document.getElementById('su-err2').classList.add('show');
+    return;
+  }
+  btn.disabled = false; btn.textContent = 'ถัดไป';
+
+  document.getElementById('su-step2').style.display='none';
+  if(p.role==='teacher'){
+    const { data: gotSchool } = await sb.rpc('claim_teacher_by_school_email');
+    if(gotSchool===true){
+      p.teacherStatus='verified'; p.viaSchoolEmail=true;
+      completeSignup();
+    }else{
+      document.getElementById('su-step4').style.display='block';
+    }
+  }else{
+    completeSignup();
+  }
+}
+async function verifyTeacherCode(){
+  const code=document.getElementById('su-teachercode').value.trim().toUpperCase();
+  const btn = document.querySelector('#su-step4 .btn-primary');
+  btn.disabled = true; btn.textContent = 'กำลังตรวจสอบ...';
+  const { data, error } = await sb.rpc('redeem_teacher_code', { input_code: code });
+  btn.disabled = false; btn.textContent = 'ยืนยันและเข้าสู่ระบบ';
+  if(error || data===false){ document.getElementById('su-err4').classList.add('show'); return; }
+  document.getElementById('su-err4').classList.remove('show');
+  state.pendingSignup.teacherStatus='pending';
+  state.pendingSignup.viaSchoolEmail=false;
+  document.getElementById('su-step4').style.display='none';
+  completeSignup();
+}
+function completeSignup(){
+  const p=state.pendingSignup;
+  if(p.role==='teacher' && p.teacherStatus==='verified'){
+    document.getElementById('su-successmsg').textContent =
+      `ยืนยันอัตโนมัติด้วยอีเมลโรงเรียน — บัญชีของคุณได้รับสถานะ "ครู" เรียบร้อยแล้ว ยินดีต้อนรับคุณครู ${p.fname}`;
+  }else if(p.role==='teacher' && p.teacherStatus==='pending'){
+    document.getElementById('su-successmsg').textContent =
+      `กรอกรหัสครูถูกต้องแล้ว แต่เนื่องจากใช้อีเมลส่วนตัว บัญชีของคุณจะอยู่ระหว่าง "รอแอดมินตรวจสอบ" ก่อนได้สถานะครูเต็มรูปแบบ`;
+  }else{
+    document.getElementById('su-successmsg').textContent = `ยินดีต้อนรับ ${p.fname} สู่ AI Learning Code`;
+  }
+  document.getElementById('su-step5').style.display='block';
+}
+async function finishSignup(){
+  await applyLoggedInUser();
+  closeOverlay('signupOverlay');
+}
+
+async function doLogin(){
+  if(!sb){ toast('เชื่อมต่อระบบไม่สำเร็จ กรุณาโหลดหน้าเว็บใหม่หรือเช็คอินเทอร์เน็ต'); return; }
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPass').value;
+  const btn = document.querySelector('#loginOverlay .btn-primary');
+  btn.disabled = true; btn.textContent = 'กำลังเข้าสู่ระบบ...';
+  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
+  if(error){
+    console.error('login failed', error);
+    const msg = (error.message||'').toLowerCase();
+    const errEl = document.getElementById('loginErr');
+    if(msg.includes('invalid login credentials')) errEl.textContent = 'อีเมลหรือรหัสผ่านไม่ถูกต้อง (ลองกด "ลืมรหัสผ่าน" เพื่อตั้งรหัสใหม่)';
+    else if(msg.includes('email not confirmed')) errEl.textContent = 'ยังไม่ได้ยืนยันอีเมล กรุณาเช็กกล่องจดหมาย';
+    else if(msg.includes('fetch') || msg.includes('network')) errEl.textContent = 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาเช็กอินเทอร์เน็ตแล้วลองใหม่';
+    else errEl.textContent = 'เข้าสู่ระบบไม่สำเร็จ: ' + error.message;
+    errEl.classList.add('show');
+    return;
+  }
+  document.getElementById('loginErr').classList.remove('show');
+  await applyLoggedInUser();
+  closeOverlay('loginOverlay');
+}
+async function loadCurrentProfile(){
+  if(!sb) return null;
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session) return null;
+  const { data:profile, error } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+  if(error || !profile) return null;
+  return {
+    id: session.user.id,
+    email: session.user.email,
+    role: profile.role,
+    teacherStatus: profile.teacher_status,
+    fname: profile.first_name,
+    lname: profile.last_name,
+    province: profile.province,
+    district: profile.district,
+    school: profile.school,
+    grade: profile.grade,
+    onlineMinutes: profile.online_minutes || 0,
+    avatarUrl: profile.avatar_url || null
+  };
+}
+async function applyLoggedInUser(){
+  const profile = await loadCurrentProfile();
+  if(!profile){ toast('ไม่พบข้อมูลผู้ใช้'); return; }
+  state.currentUser = profile;
+  renderNavActions();
+  updateStaffButtons();
+  trackMyPresence();
+  startOnlineTimeTracking();
+  if(profile.role==='student'){ renderStudentDash(); go('student'); }
+  else if(profile.role==='teacher'){ renderTeacherDash(); go('teacher'); }
+  else { renderAdminDash(); go('admin'); }
+  toast('เข้าสู่ระบบสำเร็จ');
+}
+async function refreshCurrentUser(){
+  const profile = await loadCurrentProfile();
+  if(!profile) return;
+  state.currentUser = profile;
+  renderNavActions();
+  updateStaffButtons();
+  trackMyPresence();
+}
+async function logout(){
+  await sb.auth.signOut();
+  state.currentUser=null;
+  renderNavActions();
+  updateStaffButtons();
+  trackMyPresence();
+  stopOnlineTimeTracking();
+  go('home');
+}
+function updateStaffButtons(){
+  // เฉพาะครู (ที่ยืนยันแล้ว) และแอดมินเท่านั้นที่เพิ่มเนื้อหาได้ — นักเรียนดูได้อย่างเดียว
+  const u = state.currentUser;
+  const canAdd = !!u && (
+    u.role==='admin' ||
+    (u.role==='teacher' && u.teacherStatus!=='pending')
+  );
+  document.querySelectorAll('.staff-only').forEach(btn=>{
+    btn.classList.toggle('show', canAdd);
+  });
+}
+function renderNavActions(){
+  const el=document.getElementById('navActions');
+  if(!state.currentUser){
+    el.innerHTML = `<button class="btn btn-ghost btn-sm" onclick="openLogin()">เข้าสู่ระบบ</button>
+      <button class="btn btn-primary btn-sm" onclick="openSignup()">สมัครสมาชิก</button>`;
+    updateHomeCTA();
+    return;
+  }
+  const u=state.currentUser;
+  const label = u.role==='admin' ? 'ผู้ดูแลระบบ' : (u.fname||'ผู้ใช้');
+  let roleTxt = u.role==='student'?'นักเรียน':u.role==='teacher'?'ครู':'แอดมิน';
+  if(u.role==='teacher' && u.teacherStatus==='pending') roleTxt = 'ครู (รอตรวจสอบ)';
+  el.innerHTML = `<button class="btn btn-ghost btn-sm" onclick="renderProfile();go('profile');" title="ดูโปรไฟล์">👤<span class="btn-label"> โปรไฟล์</span></button>
+    <div class="userchip" style="cursor:pointer;" onclick="goToMyDashboard();" title="ไปที่หน้าของฉัน">${avatarHtml(u.avatarUrl, u.fname, 24)} <span class="userchip-name">${label}</span> ${badgeHtml(u.onlineMinutes)} <span class="btn-label"> · ${roleTxt}</span></div>
+    <button class="btn btn-ghost btn-sm" onclick="logout()"><span class="btn-label">ออกจากระบบ</span><span class="btn-label-short">ออก</span></button>`;
+  updateHomeCTA();
+}
+function goToMyDashboard(){
+  const u = state.currentUser;
+  if(!u) return;
+  if(u.role==='student'){ renderStudentDash(); go('student'); }
+  else if(u.role==='teacher'){ renderTeacherDash(); go('teacher'); }
+  else { renderAdminDash(); go('admin'); }
+}
+function updateHomeCTA(){
+  const loggedIn = !!state.currentUser;
+  const heroBtn = document.getElementById('heroSignupBtn');
+  const ctaBtn = document.getElementById('ctaSignupBtn');
+  const ctaHeading = document.getElementById('ctaHeading');
+  const ctaSub = document.getElementById('ctaSub');
+  if(heroBtn){
+    if(loggedIn){ heroBtn.textContent='ไปที่หน้าของฉัน'; heroBtn.setAttribute('onclick','goToMyDashboard()'); }
+    else{ heroBtn.textContent='สมัครสมาชิก'; heroBtn.setAttribute('onclick','openSignup()'); }
+  }
+  if(ctaBtn){
+    if(loggedIn){ ctaBtn.textContent='ไปที่หน้าของฉัน'; ctaBtn.setAttribute('onclick','goToMyDashboard()'); }
+    else{ ctaBtn.textContent='สมัครสมาชิกฟรี'; ctaBtn.setAttribute('onclick','openSignup()'); }
+  }
+  if(ctaHeading && ctaSub){
+    if(loggedIn){
+      ctaHeading.textContent = `ยินดีต้อนรับกลับมา, ${state.currentUser.fname||''}!`;
+      ctaSub.textContent = 'ไปต่อที่หน้าของคุณเพื่อเรียนรู้ต่อได้เลย';
+    }else{
+      ctaHeading.textContent = 'พร้อมเริ่มต้นเรียนรู้ไปกับ AI แล้วหรือยัง?';
+      ctaSub.textContent = 'สมัครสมาชิกฟรี แล้วเริ่มบทเรียนแรกของคุณได้ทันที';
+    }
+  }
+}
+
+/* ================= PROFILE PICTURE ================= */
+function avatarHtml(url, name, size){
+  size = size || 32;
+  if(url){
+    return `<img class="avatar" src="${escapeHtml(url)}" alt="" loading="lazy" style="width:${size}px;height:${size}px;">`;
+  }
+  const ch = ((name||'').trim().charAt(0) || '?').toUpperCase();
+  return `<span class="avatar avatar-ph" style="width:${size}px;height:${size}px;font-size:${Math.round(size*0.45)}px;">${escapeHtml(ch)}</span>`;
+}
+function renderAvatarBox(){
+  const u = state.currentUser;
+  const box = document.getElementById('pf-avatar');
+  if(!u || !box) return;
+  box.innerHTML = avatarHtml(u.avatarUrl, u.fname, 88);
+  const rm = document.getElementById('pf-avatar-remove');
+  if(rm) rm.style.display = u.avatarUrl ? '' : 'none';
+}
+function resizeToSquare(file, size){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    const objUrl = URL.createObjectURL(file);
+    img.onload = ()=>{
+      try{
+        const side = Math.min(img.naturalWidth, img.naturalHeight);
+        const sx = (img.naturalWidth - side)/2, sy = (img.naturalHeight - side)/2;
+        const c = document.createElement('canvas');
+        c.width = c.height = size;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0,0,size,size);
+        ctx.drawImage(img, sx, sy, side, side, 0, 0, size, size);
+        c.toBlob(b=>{ URL.revokeObjectURL(objUrl); b ? resolve(b) : reject(new Error('แปลงรูปไม่สำเร็จ')); }, 'image/jpeg', 0.85);
+      }catch(e){ URL.revokeObjectURL(objUrl); reject(e); }
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(objUrl); reject(new Error('เปิดไฟล์รูปนี้ไม่ได้ กรุณาเลือกรูป JPG หรือ PNG')); };
+    img.src = objUrl;
+  });
+}
+async function onAvatarPicked(input){
+  const file = input.files && input.files[0];
+  input.value = '';
+  if(!file) return;
+  if(!sb || !state.currentUser){ toast('กรุณาเข้าสู่ระบบก่อน'); return; }
+  if(!file.type.startsWith('image/')){ toast('กรุณาเลือกไฟล์รูปภาพ'); return; }
+  toast('กำลังอัปโหลดรูป...');
+  try{
+    const blob = await resizeToSquare(file, 400);
+    const path = `${state.currentUser.id}/avatar.jpg`;
+    const { error: upErr } = await sb.storage.from('avatars').upload(path, blob, { upsert:true, contentType:'image/jpeg', cacheControl:'3600' });
+    if(upErr) throw upErr;
+    const { data: pub } = sb.storage.from('avatars').getPublicUrl(path);
+    const url = pub.publicUrl + '?v=' + Date.now();
+    const { error } = await sb.from('profiles').update({ avatar_url: url }).eq('id', state.currentUser.id);
+    if(error) throw error;
+    state.currentUser.avatarUrl = url;
+    renderAvatarBox();
+    renderNavActions();
+    toast('เปลี่ยนรูปโปรไฟล์แล้ว');
+  }catch(e){
+    console.error('avatar upload failed', e);
+    toast('อัปโหลดรูปไม่สำเร็จ: ' + (e.message || e));
+  }
+}
+async function removeAvatar(){
+  if(!sb || !state.currentUser) return;
+  try{
+    await sb.storage.from('avatars').remove([`${state.currentUser.id}/avatar.jpg`]);
+    const { error } = await sb.from('profiles').update({ avatar_url: null }).eq('id', state.currentUser.id);
+    if(error) throw error;
+    state.currentUser.avatarUrl = null;
+    renderAvatarBox();
+    renderNavActions();
+    toast('ลบรูปโปรไฟล์แล้ว');
+  }catch(e){ toast('ลบรูปไม่สำเร็จ: ' + (e.message || e)); }
+}
+
+/* ================= PROFILE PAGE ================= */
+function renderProfile(){
+  const u = state.currentUser;
+  if(!u) return;
+  document.getElementById('profileHello').textContent = `สวัสดี, ${u.fname||''} ${u.lname||''}`;
+  renderAvatarBox();
+  document.getElementById('pf-fname').value = u.fname||'';
+  document.getElementById('pf-lname').value = u.lname||'';
+  document.getElementById('pf-email').value = u.email||'';
+  document.getElementById('pf-province').value = u.province||'';
+  document.getElementById('pf-district').value = u.district||'';
+  document.getElementById('pf-school').value = u.school||'';
+  document.getElementById('pf-grade').value = u.grade || 'ม.1';
+  document.getElementById('pf-err').classList.remove('show');
+
+  const roleTxt = u.role==='student'?'นักเรียน':u.role==='teacher'?'ครู':'ผู้ดูแลระบบ';
+  const badges = [`<span class="badge">${roleTxt}</span>`];
+  if(u.role==='teacher'){
+    const statusTxt = u.teacherStatus==='verified' ? 'ยืนยันแล้ว' : u.teacherStatus==='pending' ? 'รอตรวจสอบ' : u.teacherStatus==='revoked' ? 'ถูกปลดยศ' : u.teacherStatus;
+    badges.push(`<span class="pill ${u.teacherStatus==='verified'?'ok':'wait'}">${statusTxt}</span>`);
+  }
+  const tier = getBadge(u.onlineMinutes);
+  if(tier) badges.push(`<span class="badge" style="background:${tier.color}22;color:var(--heading);">${tier.emoji} ระดับ${tier.label}</span>`);
+  document.getElementById('profileBadges').innerHTML = badges.join('');
+
+  let timeBox = document.getElementById('pf-online-time');
+  if(!timeBox){
+    timeBox = document.createElement('p');
+    timeBox.id = 'pf-online-time';
+    timeBox.style.cssText = 'font-size:13px;color:var(--ink-soft);margin:-10px 0 18px;';
+    document.getElementById('profileBadges').insertAdjacentElement('afterend', timeBox);
+  }
+  const nextTierIdx = badgeTiers.slice().reverse().findIndex(t=>(u.onlineMinutes||0) < t.minMinutes);
+  const nextTier = nextTierIdx>=0 ? badgeTiers.slice().reverse()[nextTierIdx] : null;
+  timeBox.innerHTML = `⏱ เวลาเรียนออนไลน์สะสม: <b>${formatOnlineTime(u.onlineMinutes)}</b>` +
+    (nextTier ? ` — อีก ${formatOnlineTime(nextTier.minMinutes - (u.onlineMinutes||0))} จะได้ป้าย ${nextTier.emoji} ระดับ${nextTier.label}` : ' — ได้ป้ายสูงสุดแล้ว! 👑');
+
+  document.getElementById('pf-teacher-upgrade').style.display = (u.role==='student') ? 'block' : 'none';
+  document.getElementById('pf-teacher-err').classList.remove('show');
+  const codeInput = document.getElementById('pf-teachercode');
+  if(codeInput) codeInput.value='';
+}
+async function tryClaimSchoolEmail(){
+  if(!sb) return;
+  const { data, error } = await sb.rpc('claim_teacher_by_school_email');
+  if(error || data!==true){ toast('อีเมลของคุณไม่ตรงกับโดเมนโรงเรียนที่ระบบรับรอง'); return; }
+  toast('ยืนยันเป็นครูสำเร็จด้วยอีเมลโรงเรียน!');
+  await refreshCurrentUser();
+  renderProfile();
+}
+async function redeemCodeFromProfile(){
+  if(!sb) return;
+  const code = document.getElementById('pf-teachercode').value.trim().toUpperCase();
+  if(!code){ toast('กรุณากรอกรหัสครู'); return; }
+  const { data, error } = await sb.rpc('redeem_teacher_code', { input_code: code });
+  if(error || data===false){ document.getElementById('pf-teacher-err').classList.add('show'); return; }
+  document.getElementById('pf-teacher-err').classList.remove('show');
+  toast('กรอกรหัสถูกต้อง — บัญชีอยู่ระหว่างรอแอดมินตรวจสอบ');
+  await refreshCurrentUser();
+  renderProfile();
+}
+async function saveProfile(){
+  if(!sb){ toast('เชื่อมต่อระบบไม่สำเร็จ กรุณาโหลดหน้าเว็บใหม่หรือเช็คอินเทอร์เน็ต'); return; }
+  const fname = document.getElementById('pf-fname').value.trim();
+  const lname = document.getElementById('pf-lname').value.trim();
+  if(!fname || !lname){ document.getElementById('pf-err').classList.add('show'); return; }
+  document.getElementById('pf-err').classList.remove('show');
+  const updates = {
+    first_name: fname,
+    last_name: lname,
+    province: document.getElementById('pf-province').value.trim(),
+    district: document.getElementById('pf-district').value.trim(),
+    school: document.getElementById('pf-school').value.trim(),
+    grade: document.getElementById('pf-grade').value
+  };
+  const btn = document.querySelector('#view-profile .btn-primary');
+  btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+  const { error } = await sb.from('profiles').update(updates).eq('id', state.currentUser.id);
+  btn.disabled = false; btn.textContent = 'บันทึกการเปลี่ยนแปลง';
+  if(error){ toast('บันทึกไม่สำเร็จ: '+error.message); return; }
+  Object.assign(state.currentUser, {
+    fname: updates.first_name, lname: updates.last_name,
+    province: updates.province, district: updates.district,
+    school: updates.school, grade: updates.grade
+  });
+  renderNavActions();
+  renderProfile();
+  toast('บันทึกโปรไฟล์สำเร็จ');
+}
+
+/* ================= SESSION RESTORE ON PAGE LOAD ================= */
+(async function restoreSession(){
+  const profile = await loadCurrentProfile();
+  if(profile){
+    state.currentUser = profile;
+    renderNavActions();
+    updateStaffButtons();
+    startOnlineTimeTracking();
+  }
+})();
+
+/* ================= PASSWORD RECOVERY LINK HANDLER ================= */
+if(sb){
+  sb.auth.onAuthStateChange((event, session)=>{
+    if(event === 'PASSWORD_RECOVERY'){
+      document.getElementById('resetPasswordOverlay').classList.add('active');
+    }
+  });
+}
+
+/* ================= STUDENT DASH ================= */
+async function renderStudentDash(){
+  const u=state.currentUser;
+  document.getElementById('studentHello').textContent = `สวัสดี, ${u.fname||'นักเรียน'} 👋`;
+  document.getElementById('stRooms').textContent = state.classrooms.filter(r=>r.students.includes(u.fname)).length;
+  document.getElementById('progressList').innerHTML = lessons.length ? lessons.slice(0,4).map((l,i)=>`
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;font-size:13.5px;"><span>${escapeHtml(l.t)}</span><span style="color:var(--ink-soft);">${[80,60,45,20][i]}%</span></div>
+      <div class="progress-bar"><i style="width:${[80,60,45,20][i]}%;"></i></div>
+    </div>`).join('') : `<div class="empty">ยังไม่มีบทเรียนในระบบ — ไปที่เมนู "บทเรียน" เพื่อเพิ่มบทเรียนแรกของคุณ</div>`;
+  renderMyRooms();
+
+  document.getElementById('stStudied').textContent = '…';
+  document.getElementById('stScore').textContent = '…%';
+  document.getElementById('myScoresBody').innerHTML = `<tr><td colspan="3" class="empty">กำลังโหลด...</td></tr>`;
+  if(!sb) return;
+  const { data, error } = await sb.from('exercise_attempts').select('*').eq('user_id', u.id).order('created_at', {ascending:false});
+  const attempts = data || [];
+  document.getElementById('stStudied').textContent = attempts.length;
+  const avgPct = attempts.length ? Math.round(attempts.reduce((s,a)=>s+a.percent,0)/attempts.length) : 0;
+  document.getElementById('stScore').textContent = avgPct+'%';
+  document.getElementById('myScoresBody').innerHTML = attempts.length ? attempts.slice(0,10).map(a=>`
+    <tr><td>${escapeHtml(a.exercise_title)}</td><td>${a.score}/${a.total} (${a.percent}%)</td>
+    <td>${new Date(a.created_at).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'})}</td></tr>`).join('')
+    : `<tr><td colspan="3" class="empty">ยังไม่เคยทำแบบฝึกเลย — ไปที่เมนู "แบบฝึก" เพื่อเริ่มทำข้อแรก</td></tr>`;
+}
+function renderMyRooms(){
+  const u=state.currentUser;
+  const mine = state.classrooms.filter(r=>r.students.includes(u.fname));
+  document.getElementById('myRooms').innerHTML = mine.length ? mine.map(r=>`
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px;">
+      <span>${r.name}</span><span class="code-tag">${r.code}</span></div>`).join('')
+    : `<div class="empty">ยังไม่ได้เข้าร่วมห้องเรียน — กรอกรหัสห้องเรียนด้านบน</div>`;
+}
+function joinClassroom(){
+  const code=document.getElementById('joinCode').value.trim().toUpperCase();
+  const room=state.classrooms.find(r=>r.code===code);
+  if(!room){ toast('ไม่พบรหัสห้องเรียนนี้'); return; }
+  const u=state.currentUser;
+  if(!room.students.includes(u.fname)) room.students.push(u.fname);
+  document.getElementById('joinCode').value='';
+  toast(`เข้าร่วมห้องเรียน "${room.name}" สำเร็จ`);
+  renderStudentDash();
+}
+
+/* ================= TEACHER DASH ================= */
+async function renderTeacherDash(){
+  const u=state.currentUser;
+  document.getElementById('teacherHello').textContent = `สวัสดี, คุณครู ${u.fname||''} 👋`;
+  const pendingBanner = document.getElementById('teacherPendingBanner');
+  if(pendingBanner) pendingBanner.remove();
+  if(u.teacherStatus==='pending'){
+    const wrap = document.querySelector('#view-teacher .page-hero .wrap');
+    const b = document.createElement('div');
+    b.id='teacherPendingBanner';
+    b.style.cssText='margin-top:14px;background:#FFF3E8;border:1px solid #F3D9B8;color:#C9822B;border-radius:12px;padding:12px 16px;font-size:13.5px;font-weight:600;';
+    b.textContent='⏳ บัญชีของคุณอยู่ระหว่างรอแอดมินตรวจสอบและอนุมัติ (สมัครด้วยอีเมลส่วนตัว) — บางฟีเจอร์อาจถูกจำกัดจนกว่าจะได้รับการอนุมัติ';
+    wrap.appendChild(b);
+  }
+  const mine = state.classrooms.filter(r=>r.teacher===u.fname);
+  document.getElementById('tcRooms').textContent = mine.length;
+  document.getElementById('tcStudents').textContent = mine.reduce((n,r)=>n+r.students.length,0);
+  document.getElementById('tcLessons').textContent = lessons.length;
+  document.getElementById('tcAssign').textContent = exercises.length;
+  const tbody = document.querySelector('#teacherRoomsTable tbody');
+  tbody.innerHTML = mine.length ? mine.map(r=>`
+    <tr><td>${escapeHtml(r.name)}</td><td><span class="code-tag">${r.code}</span></td><td>${r.students.length} คน</td>
+    <td style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn btn-ghost btn-sm" onclick="showClassroomQR('${r.code}','${escapeHtml(r.name).replace(/'/g,"\\'")}')">🔲 QR</button></td></tr>`).join('')
+    : `<tr><td colspan="4" class="empty">ยังไม่มีห้องเรียน — สร้างห้องเรียนใหม่ด้านบน</td></tr>`;
+
+  await renderStaffScoresTable('teacherScoresBody');
+}
+async function renderStaffScoresTable(tbodyId){
+  const el = document.getElementById(tbodyId);
+  if(!el) return;
+  if(!sb){ el.innerHTML = `<tr><td colspan="4" class="empty">เชื่อมต่อระบบไม่สำเร็จ</td></tr>`; return; }
+  const { data: attempts } = await sb.from('exercise_attempts').select('*').order('created_at', {ascending:false}).limit(50);
+  if(!attempts || !attempts.length){
+    el.innerHTML = `<tr><td colspan="4" class="empty">ยังไม่มีนักเรียนคนไหนทำแบบฝึกเลย</td></tr>`;
+    return;
+  }
+  const userIds = [...new Set(attempts.map(a=>a.user_id))];
+  const { data: profiles } = await sb.from('profiles').select('id, first_name, last_name').in('id', userIds);
+  const nameMap = {};
+  (profiles||[]).forEach(p=> nameMap[p.id] = `${p.first_name||''} ${p.last_name||''}`.trim() || 'ผู้ใช้');
+  el.innerHTML = attempts.map(a=>`
+    <tr><td>${escapeHtml(nameMap[a.user_id]||'ผู้ใช้')}</td><td>${escapeHtml(a.exercise_title)}</td>
+    <td>${a.score}/${a.total} (${a.percent}%)</td>
+    <td>${new Date(a.created_at).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'})}</td></tr>`).join('');
+}
+function createClassroom(){
+  const name=document.getElementById('roomName').value.trim();
+  if(!name){ toast('กรุณากรอกชื่อห้องเรียน'); return; }
+  const code = 'RM' + Math.floor(1000+Math.random()*9000);
+  state.classrooms.push({name, code, teacher:state.currentUser.fname, students:[]});
+  document.getElementById('roomName').value='';
+  toast(`สร้างห้องเรียน "${name}" สำเร็จ · รหัส ${code}`);
+  renderTeacherDash();
+}
+function showClassroomQR(code, name){
+  document.getElementById('qrRoomName').textContent = name;
+  document.getElementById('qrCodeText').textContent = code;
+  document.getElementById('qrImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(code)}`;
+  document.getElementById('qrOverlay').classList.add('active');
+}
+
+/* ================= ADMIN DASH ================= */
+const adminData = {
+  // lessons/exercises/prompts/media/rooms/scores below are still local-only mock content (not yet moved to the database)
+};
+function renderAdminDash(){ adminTab('dashboard'); }
+document.getElementById('adminMenu').addEventListener('click', e=>{
+  const b=e.target.closest('button[data-a]'); if(!b) return;
+  document.querySelectorAll('#adminMenu button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  adminTab(b.dataset.a);
+});
+async function adminTab(tab){
+  currentAdminTab = tab;
+  const c=document.getElementById('adminContent');
+  c.innerHTML = `<div class="empty">กำลังโหลด...</div>`;
+
+  if(tab==='dashboard'){
+    await renderAdminAnalytics(c);
+  }
+  else if(tab==='online'){
+    c.innerHTML = `<div class="panel"><h3>ผู้ใช้งานออนไลน์ตอนนี้</h3>
+      <p style="font-size:13.5px;color:var(--ink-soft);margin-bottom:14px;">รายชื่อคนที่เปิดเว็บอยู่ ณ วินาทีนี้ อัปเดตสดอัตโนมัติ</p>
+      <table><thead><tr><th>ชื่อ</th><th>บทบาท</th><th>ออนไลน์ตั้งแต่</th></tr></thead>
+      <tbody id="onlineUsersBody"><tr><td colspan="3" class="empty">กำลังโหลด...</td></tr></tbody></table></div>`;
+    renderOnlineUsersAdmin();
+  }
+  else if(tab==='students'){
+    const { data } = await sb.from('profiles').select('*').eq('role','student').order('created_at',{ascending:false});
+    const rows = (data||[]).map(s=>`<tr><td>${escapeHtml((s.first_name||'')+' '+(s.last_name||''))}</td><td>${escapeHtml(s.school||'-')}</td><td>${escapeHtml(s.grade||'-')}</td></tr>`).join('');
+    c.innerHTML = `<div class="panel"><h3>จัดการนักเรียน (${(data||[]).length})</h3>
+      <table><thead><tr><th>ชื่อ</th><th>โรงเรียน</th><th>ระดับชั้น</th></tr></thead><tbody>
+      ${rows || '<tr><td colspan="3" class="empty">ยังไม่มีนักเรียนในระบบ</td></tr>'}
+      </tbody></table></div>`;
+  }
+  else if(tab==='teachers' || tab==='verify'){
+    let q = sb.from('profiles').select('*').eq('role','teacher');
+    if(tab==='verify') q = q.eq('teacher_status','pending');
+    const { data } = await q.order('created_at',{ascending:false});
+    const statusLabel = s => s==='verified' ? 'ยืนยันแล้ว' : s==='pending' ? 'รอตรวจสอบ' : s==='revoked' ? 'ถูกปลดยศ' : s;
+    const rows = (data||[]).map(t=>{
+      const name = `${t.first_name||''} ${t.last_name||''}`.trim();
+      return `<tr>
+        <td>${escapeHtml(name)}</td>
+        <td>${escapeHtml(t.school||'-')}</td>
+        <td><span class="pill ${t.teacher_status==='verified'?'ok':'wait'}">${statusLabel(t.teacher_status)}</span></td>
+        <td style="white-space:nowrap;display:flex;gap:6px;">
+          ${t.teacher_status==='pending' ? `<button class="btn btn-primary btn-sm" onclick="approveTeacherUser('${t.id}')">อนุมัติ</button>` : ''}
+          <button class="btn btn-ghost btn-sm" style="color:#D64545;border-color:#F3C6C6;" onclick="revokeTeacherUser('${t.id}')">ปลดยศ</button>
+        </td></tr>`;
+    }).join('');
+    const title = tab==='verify' ? 'ตรวจสอบครู (รอตรวจสอบ)' : `จัดการครู (${(data||[]).length})`;
+    c.innerHTML = `<div class="panel"><h3>${title}</h3>
+      <table><thead><tr><th>ชื่อ</th><th>โรงเรียน</th><th>สถานะ</th><th></th></tr></thead><tbody>
+      ${rows || '<tr><td colspan="4" class="empty">ไม่มีรายการ</td></tr>'}
+      </tbody></table></div>`;
+  }
+  else if(tab==='codes'){
+    const { data } = await sb.from('teacher_codes').select('*').eq('used', false).order('created_at',{ascending:false});
+    const rows = (data||[]).map(t=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px;"><span class="code-tag">${escapeHtml(t.code)}</span><span style="color:var(--ink-soft);">ยังไม่ถูกใช้งาน</span></div>`).join('');
+    c.innerHTML = `<div class="panel"><h3>สร้างรหัสครู</h3>
+      <p style="font-size:13.5px;color:var(--ink-soft);margin-bottom:14px;">สร้างรหัสสำหรับให้ครูใช้ยืนยันตัวตนตอนสมัครสมาชิก (ใช้กับอีเมลส่วนตัวเท่านั้น — อีเมลโรงเรียนไม่ต้องใช้รหัสนี้)</p>
+      <div class="inline-form"><button class="btn btn-primary btn-sm" onclick="genTeacherCode()">+ สร้างรหัสใหม่</button></div>
+      <div style="margin-top:12px;">${rows || '<div class="empty">ไม่มีรหัสที่ยังไม่ถูกใช้งาน</div>'}</div></div>`;
+  }
+  else if(tab==='domains'){
+    const { data } = await sb.from('school_domains').select('*').order('created_at',{ascending:false});
+    const rows = (data||[]).map(d=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px;"><span class="code-tag">${escapeHtml(d.domain)}</span><button class="btn btn-ghost btn-sm" style="color:#D64545;border-color:#F3C6C6;" onclick="removeSchoolDomain('${escapeHtml(d.domain)}')">ลบ</button></div>`).join('');
+    c.innerHTML = `<div class="panel"><h3>โดเมนอีเมลโรงเรียนที่เชื่อถือได้ (${(data||[]).length})</h3>
+      <p style="font-size:13.5px;color:var(--ink-soft);margin-bottom:14px;">ผู้สมัครที่ใช้อีเมลลงท้ายด้วยโดเมนในรายการนี้ จะได้สถานะ "ครู" ทันที โดยไม่ต้องกรอกรหัสครูหรือรอแอดมินอนุมัติ</p>
+      <div class="inline-form"><input id="newSchoolDomain" placeholder="เช่น satit.ac.th หรือ ac.th"><button class="btn btn-primary btn-sm" onclick="addSchoolDomain()">+ เพิ่มโดเมน</button></div>
+      <div style="margin-top:12px;">${rows || '<div class="empty">ยังไม่มีโดเมนที่เชื่อถือได้</div>'}</div></div>`;
+  }
+  else if(tab==='admins'){
+    const { data } = await sb.from('profiles').select('*').eq('role','admin');
+    const rows = (data||[]).map(a=>`<tr><td>${escapeHtml((a.first_name||'')+' '+(a.last_name||''))}</td><td><span class="code-tag">${a.id.slice(0,8)}...</span></td></tr>`).join('');
+    c.innerHTML = `<div class="panel"><h3>ผู้ดูแลระบบ (${(data||[]).length}/4 คน)</h3>
+      <table><thead><tr><th>ชื่อ</th><th>รหัสผู้ใช้</th></tr></thead><tbody>
+      ${rows || '<tr><td colspan="2" class="empty">ไม่มีแอดมิน</td></tr>'}
+      </tbody></table>
+      <div class="empty" style="margin-top:14px;text-align:left;">💡 วิธีเพิ่มแอดมินคนใหม่ (สูงสุด 4 คน): ให้คนนั้นสมัครสมาชิกปกติในเว็บก่อน 1 ครั้ง จากนั้นไปที่ Supabase → Table Editor → profiles → หาแถวของเขา → แก้ค่า role เป็น admin ด้วยมือ</div>
+      </div>`;
+  }
+  else if(tab==='lessons'){
+    c.innerHTML = `<div class="panel"><h3>จัดการบทเรียน (${lessons.length})</h3>
+      <p style="font-size:13.5px;color:var(--ink-soft);">เพิ่มชื่อบทเรียน เนื้อหา รูปภาพ วิดีโอ เอกสาร หรือลิงก์ได้จากที่นี่</p>
+      <div class="inline-form" style="margin-top:12px;"><input id="newLessonName" placeholder="ชื่อบทเรียนใหม่"><button class="btn btn-primary btn-sm" onclick="addLesson()">+ เพิ่มบทเรียน</button></div>
+      <table style="margin-top:14px;"><thead><tr><th>ชื่อบทเรียน</th><th>หมวด</th></tr></thead><tbody>
+      ${lessons.map(l=>`<tr><td>${escapeHtml(l.t)}</td><td>${escapeHtml(l.tag)}</td></tr>`).join('') || '<tr><td colspan="2" class="empty">ยังไม่มีบทเรียน</td></tr>'}
+      </tbody></table></div>`;
+  }
+  else if(tab==='exercises'){
+    c.innerHTML = `<div class="panel"><h3>จัดการแบบฝึก (${exercises.length})</h3>
+      <table><thead><tr><th>ชื่อแบบฝึก</th><th>จำนวนข้อ</th></tr></thead><tbody>
+      ${exercises.map(e=>`<tr><td>${escapeHtml(e.t)}</td><td>${e.q.length} ข้อ</td></tr>`).join('') || '<tr><td colspan="2" class="empty">ยังไม่มีแบบฝึก</td></tr>'}
+      </tbody></table></div>`;
+  }
+  else if(tab==='prompts'){
+    c.innerHTML = `<div class="panel"><h3>จัดการ Prompt (${prompts.length})</h3>
+      <table><thead><tr><th>ชื่อ Prompt</th><th>หมวด</th></tr></thead><tbody>
+      ${prompts.map(p=>`<tr><td>${escapeHtml(p.t)}</td><td>${escapeHtml(p.tag)}</td></tr>`).join('') || '<tr><td colspan="2" class="empty">ยังไม่มี Prompt</td></tr>'}
+      </tbody></table></div>`;
+  }
+  else if(tab==='media'){
+    c.innerHTML = `<div class="panel"><h3>จัดการสื่อการเรียนรู้ (${media.length})</h3>
+      <table><thead><tr><th>ชื่อสื่อ</th><th>ประเภท</th></tr></thead><tbody>
+      ${media.map(m=>`<tr><td>${escapeHtml(m.t)}</td><td>${escapeHtml(m.type)}</td></tr>`).join('') || '<tr><td colspan="2" class="empty">ยังไม่มีสื่อ</td></tr>'}
+      </tbody></table></div>`;
+  }
+  else if(tab==='rooms'){
+    c.innerHTML = `<div class="panel"><h3>จัดการห้องเรียน (${state.classrooms.length})</h3>
+      <table><thead><tr><th>ชื่อห้องเรียน</th><th>ครูผู้สอน</th><th>รหัส</th><th>นักเรียน</th></tr></thead><tbody>
+      ${state.classrooms.length ? state.classrooms.map(r=>`<tr><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.teacher)}</td><td><span class="code-tag">${r.code}</span></td><td>${r.students.length} คน</td></tr>`).join('') : `<tr><td colspan="4" class="empty">ยังไม่มีห้องเรียนในระบบ</td></tr>`}
+      </tbody></table></div>`;
+  }
+  else if(tab==='scores'){
+    c.innerHTML = `<div class="panel"><h3>ดูคะแนนทั้งหมด</h3>
+      <table><thead><tr><th>นักเรียน</th><th>แบบฝึก</th><th>คะแนน</th><th>วันที่ทำ</th></tr></thead>
+      <tbody id="adminScoresBody"><tr><td colspan="4" class="empty">กำลังโหลด...</td></tr></tbody></table></div>`;
+    await renderStaffScoresTable('adminScoresBody');
+  }
+}
+function genTeacherCode(){
+  const code = 'TEACH-' + Math.floor(1000+Math.random()*9000);
+  sb.from('teacher_codes').insert({ code }).then(({error})=>{
+    if(error){ toast('สร้างรหัสไม่สำเร็จ (ต้องเป็นแอดมิน)'); return; }
+    adminTab('codes');
+    toast('สร้างรหัสครูใหม่: '+code);
+  });
+}
+function addSchoolDomain(){
+  const v=document.getElementById('newSchoolDomain').value.trim().toLowerCase().replace(/^@/,'');
+  if(!v){ toast('กรุณากรอกโดเมน'); return; }
+  sb.from('school_domains').insert({ domain: v }).then(({error})=>{
+    if(error){ toast(error.message.includes('duplicate') ? 'มีโดเมนนี้อยู่แล้ว' : 'เพิ่มไม่สำเร็จ (ต้องเป็นแอดมิน)'); return; }
+    adminTab('domains');
+    toast('เพิ่มโดเมนสำเร็จ: '+v);
+  });
+}
+function removeSchoolDomain(domain){
+  sb.from('school_domains').delete().eq('domain', domain).then(({error})=>{
+    if(error){ toast('ลบไม่สำเร็จ'); return; }
+    adminTab('domains');
+    toast('ลบโดเมนแล้ว');
+  });
+}
+function approveTeacherUser(userId){
+  sb.rpc('approve_teacher', { target_id: userId }).then(({error})=>{
+    if(error){ toast('อนุมัติไม่สำเร็จ (ต้องเป็นแอดมิน)'); return; }
+    adminTab('verify');
+    toast('อนุมัติสถานะครูแล้ว');
+    if(state.currentUser && state.currentUser.id===userId){ state.currentUser.teacherStatus='verified'; renderNavActions(); updateStaffButtons(); }
+  });
+}
+function revokeTeacherUser(userId){
+  sb.rpc('revoke_teacher', { target_id: userId }).then(({error})=>{
+    if(error){ toast('ปลดยศไม่สำเร็จ (ต้องเป็นแอดมิน)'); return; }
+    adminTab('teachers');
+    toast('ปลดยศครูแล้ว — บัญชีนี้กลับเป็นนักเรียน');
+    if(state.currentUser && state.currentUser.id===userId){ state.currentUser.role='student'; state.currentUser.teacherStatus='revoked'; renderNavActions(); updateStaffButtons(); }
+  });
+}
+function addLesson(){
+  const name=document.getElementById('newLessonName').value.trim();
+  if(!name){ toast('กรุณากรอกชื่อบทเรียน'); return; }
+  lessons.push({t:name, d:"เพิ่มโดยผู้ดูแลระบบ", tag:"ทั่วไป"});
+  renderLessons();
+  adminTab('lessons');
+  toast('เพิ่มบทเรียนสำเร็จ');
+}
+
+/* ================= quiz overlay (inject once) ================= */
+const quizOverlayDiv = document.createElement('div');
+quizOverlayDiv.className='overlay'; quizOverlayDiv.id='quizOverlay';
+quizOverlayDiv.innerHTML = '<div class="modal" style="max-width:560px;"></div>';
+document.body.appendChild(quizOverlayDiv);
+
+/* ================= hero network animation ================= */
+(function(){
+  const canvas=document.getElementById('net');
+  const ctx=canvas.getContext('2d');
+  let w,h,nodes=[];
+  function resize(){
+    w=canvas.width=canvas.offsetWidth; h=canvas.height=canvas.offsetHeight;
+  }
+  function init(){
+    resize();
+    nodes=Array.from({length:34},()=>({
+      x:Math.random()*w, y:Math.random()*h,
+      vx:(Math.random()-.5)*.35, vy:(Math.random()-.5)*.35
+    }));
+  }
+  function tick(){
+    ctx.clearRect(0,0,w,h);
+    nodes.forEach(n=>{
+      n.x+=n.vx; n.y+=n.vy;
+      if(n.x<0||n.x>w) n.vx*=-1;
+      if(n.y<0||n.y>h) n.vy*=-1;
+    });
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<130){
+          ctx.strokeStyle=`rgba(200,210,255,${(1-dist/130)*.22})`;
+          ctx.lineWidth=1;
+          ctx.beginPath(); ctx.moveTo(nodes[i].x,nodes[i].y); ctx.lineTo(nodes[j].x,nodes[j].y); ctx.stroke();
+        }
+      }
+    }
+    nodes.forEach(n=>{
+      ctx.fillStyle='rgba(220,228,255,.65)';
+      ctx.beginPath(); ctx.arc(n.x,n.y,1.6,0,7); ctx.fill();
+    });
+    requestAnimationFrame(tick);
+  }
+  window.addEventListener('resize', ()=>{resize();});
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  init();
+  if(!reduce) requestAnimationFrame(tick);
+})();
+
+/* ================= scroll reveal ================= */
+const revealObserver = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in-view'); revealObserver.unobserve(e.target); } });
+},{threshold:.15});
+document.querySelectorAll('[data-reveal]').forEach(el=>revealObserver.observe(el));
+
+/* ================= init ================= */
+renderLessons(); renderExercises(); renderPrompts(); renderMedia();
+updateStaffButtons();
+initLiveStats();
+initDarkMode();
+
+/* ================= DARK MODE ================= */
+function initDarkMode(){
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const useDark = saved ? saved==='dark' : prefersDark;
+  setDarkMode(useDark);
+}
+function setDarkMode(on){
+  document.documentElement.classList.toggle('dark', on);
+  const btn = document.getElementById('themeToggleBtn');
+  if(btn) btn.textContent = on ? '☀️' : '🌙';
+  localStorage.setItem('theme', on ? 'dark' : 'light');
+}
+function toggleDarkMode(){
+  setDarkMode(!document.documentElement.classList.contains('dark'));
+}
+
+/* ================= LIVE STATS (real-time signup count + online presence) ================= */
+async function initLiveStats(){
+  if(!sb) return;
+
+  // 1) total registered accounts — initial count, then live-increment on every new signup
+  try{
+    const { data: total } = await sb.rpc('get_total_users');
+    document.getElementById('liveTotalCount').textContent = total ?? '0';
+  }catch(e){ console.error('live total count failed', e); }
+
+  // refresh the total every 60s (RLS no longer lets every user receive other users' INSERT events)
+  setInterval(async ()=>{
+    try{
+      const { data: total } = await sb.rpc('get_total_users');
+      if(total!=null) document.getElementById('liveTotalCount').textContent = total;
+    }catch(e){}
+  }, 60000);
+
+  // 2) who's online right now — Realtime Presence (counts anyone with this page open, logged in or not)
+  const myPresenceKey = state.currentUser ? ('user-'+state.currentUser.id) : ('guest-'+Math.random().toString(36).slice(2));
+  presenceChannel = sb.channel('online-users', { config: { presence: { key: myPresenceKey } } });
+
+  presenceChannel
+    .on('presence', { event:'sync' }, ()=>{
+      const presState = presenceChannel.presenceState();
+      document.getElementById('liveOnlineCount').textContent = Object.keys(presState).length;
+      if(currentAdminTab === 'online') renderOnlineUsersAdmin();
+    })
+    .subscribe(async (status)=>{
+      if(status === 'SUBSCRIBED'){
+        await trackMyPresence();
+      }
+    });
+
+  // 3) live activity feed — broadcast channel (no DB table needed)
+  activityChannel = sb.channel('activity-feed');
+  activityChannel
+    .on('broadcast', { event:'activity' }, ({ payload })=>{
+      showTicker(payload.message);
+    })
+    .subscribe();
+}
+async function trackMyPresence(){
+  if(!presenceChannel) return;
+  const u = state.currentUser;
+  await presenceChannel.track({
+    name: u ? `${u.fname||''} ${u.lname||''}`.trim() : 'ผู้เยี่ยมชม (ยังไม่ล็อกอิน)',
+    role: u ? u.role : 'guest',
+    online_at: new Date().toISOString()
+  });
+}
+/* ================= ADMIN ANALYTICS DASHBOARD (real charts, no external library) ================= */
+async function renderAdminAnalytics(c){
+  if(!sb){ c.innerHTML = `<div class="empty">เชื่อมต่อระบบไม่สำเร็จ</div>`; return; }
+
+  const [{ data: profiles }, { data: attempts }] = await Promise.all([
+    sb.from('profiles').select('role, created_at'),
+    sb.from('exercise_attempts').select('percent, created_at')
+  ]);
+  const P = profiles || [];
+  const A = attempts || [];
+
+  // --- stat cards ---
+  const totalUsers = P.length;
+  const totalAttempts = A.length;
+  const avgPct = A.length ? Math.round(A.reduce((s,a)=>s+a.percent,0)/A.length) : 0;
+  const passRate = A.length ? Math.round(A.filter(a=>a.percent>=50).length/A.length*100) : 0;
+
+  // --- signups per day, last 14 days ---
+  const days = [];
+  for(let i=13;i>=0;i--){
+    const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-i);
+    days.push(d);
+  }
+  const dayKey = d => d.toISOString().slice(0,10);
+  const signupCounts = days.map(d=>{
+    const key = dayKey(d);
+    return P.filter(p=> (p.created_at||'').slice(0,10) === key).length;
+  });
+  const dayLabels = days.map(d=> `${d.getDate()}/${d.getMonth()+1}`);
+
+  // --- role breakdown ---
+  const roleCounts = {
+    student: P.filter(p=>p.role==='student').length,
+    teacher: P.filter(p=>p.role==='teacher').length,
+    admin:   P.filter(p=>p.role==='admin').length,
+  };
+
+  c.innerHTML = `
+    <div class="stat-row">
+      <div class="stat"><div class="n">${totalUsers}</div><div class="l">สมาชิกทั้งหมด</div></div>
+      <div class="stat"><div class="n">${totalAttempts}</div><div class="l">ครั้งที่ทำแบบฝึก</div></div>
+      <div class="stat"><div class="n">${avgPct}%</div><div class="l">คะแนนเฉลี่ยรวม</div></div>
+      <div class="stat"><div class="n">${passRate}%</div><div class="l">อัตราผ่านเกณฑ์ (≥50%)</div></div>
+    </div>
+    <div class="panel">
+      <h3>ยอดสมัครสมาชิกรายวัน (14 วันล่าสุด)</h3>
+      ${barChartSVG(signupCounts, dayLabels)}
+    </div>
+    <div class="panel" style="display:flex;gap:24px;flex-wrap:wrap;align-items:center;">
+      <div>${donutChartSVG([
+          {label:'นักเรียน', value:roleCounts.student, color:'#2F5FE0'},
+          {label:'ครู',      value:roleCounts.teacher, color:'#6EE7C9'},
+          {label:'แอดมิน',   value:roleCounts.admin,   color:'#C9BCF2'}
+        ])}</div>
+      <div style="flex:1;min-width:160px;">
+        <h3 style="margin-bottom:12px;">สัดส่วนผู้ใช้งาน</h3>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13.5px;">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:10px;height:10px;border-radius:3px;background:#2F5FE0;display:inline-block;"></span> นักเรียน — ${roleCounts.student} คน</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:10px;height:10px;border-radius:3px;background:#6EE7C9;display:inline-block;"></span> ครู — ${roleCounts.teacher} คน</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:10px;height:10px;border-radius:3px;background:#C9BCF2;display:inline-block;"></span> แอดมิน — ${roleCounts.admin} คน</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function barChartSVG(values, labels){
+  const w = 640, h = 200, padB = 26, padT = 10, barGap = 6;
+  const max = Math.max(1, ...values);
+  const n = values.length;
+  const barW = (w - (n-1)*barGap) / n;
+  let bars = '';
+  values.forEach((v,i)=>{
+    const bh = max>0 ? (v/max) * (h-padB-padT) : 0;
+    const x = i*(barW+barGap);
+    const y = h - padB - bh;
+    bars += `<rect x="${x}" y="${y}" width="${barW}" height="${bh}" rx="3" fill="#2F5FE0"><title>${labels[i]}: ${v}</title></rect>`;
+    if(v>0) bars += `<text x="${x+barW/2}" y="${y-4}" font-size="9" text-anchor="middle" fill="#5A6382">${v}</text>`;
+    if(i%2===0) bars += `<text x="${x+barW/2}" y="${h-8}" font-size="8" text-anchor="middle" fill="#9AA3C0">${labels[i]}</text>`;
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;max-height:220px;" preserveAspectRatio="xMidYMid meet">${bars}</svg>`;
+}
+function donutChartSVG(segments){
+  const total = segments.reduce((s,seg)=>s+seg.value,0) || 1;
+  const r = 60, cx = 80, cy = 80, sw = 24;
+  const circumference = 2*Math.PI*r;
+  let offset = 0;
+  let circles = '';
+  segments.forEach(seg=>{
+    const frac = seg.value/total;
+    const len = frac*circumference;
+    circles += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${seg.color}" stroke-width="${sw}"
+      stroke-dasharray="${len} ${circumference-len}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})">
+      <title>${seg.label}: ${seg.value}</title></circle>`;
+    offset += len;
+  });
+  return `<svg viewBox="0 0 160 160" style="width:160px;height:160px;">
+    ${circles}
+    <circle cx="${cx}" cy="${cy}" r="${r-sw/2-2}" fill="var(--white)"/>
+    <text x="${cx}" y="${cy-2}" font-size="20" font-weight="800" text-anchor="middle" fill="var(--heading)">${total}</text>
+    <text x="${cx}" y="${cy+16}" font-size="10" text-anchor="middle" fill="#9AA3C0">คนทั้งหมด</text>
+  </svg>`;
+}
+function renderOnlineUsersAdmin(){
+  const el = document.getElementById('onlineUsersBody');
+  if(!el) return;
+  if(!presenceChannel){ el.innerHTML = `<tr><td colspan="3" class="empty">ยังไม่ได้เชื่อมต่อระบบออนไลน์</td></tr>`; return; }
+  const presState = presenceChannel.presenceState();
+  const entries = Object.values(presState).map(arr=>arr[0]).filter(Boolean);
+  entries.sort((a,b)=> (a.role==='guest') - (b.role==='guest')); // logged-in users first
+  const roleTxt = r => r==='admin'?'แอดมิน':r==='teacher'?'ครู':r==='student'?'นักเรียน':'ผู้เยี่ยมชม';
+  el.innerHTML = entries.length ? entries.map(e=>`
+    <tr><td>${escapeHtml(e.name||'-')}</td><td>${roleTxt(e.role)}</td>
+    <td>${e.online_at ? new Date(e.online_at).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}) : '-'}</td></tr>`).join('')
+    : `<tr><td colspan="3" class="empty">ไม่มีใครออนไลน์อยู่ตอนนี้</td></tr>`;
+}
+
+/* ================= ONLINE-TIME TRACKING + TIERED BADGES ================= */
+const badgeTiers = [
+  { minMinutes:36000, emoji:'👑', label:'ตำนาน',   color:'#FFC15E' }, // ~25 วัน (เกือบเดือน)
+  { minMinutes:10080, emoji:'💎', label:'เพชร',     color:'#5BB8F5' }, // 7 วัน (1 สัปดาห์)
+  { minMinutes:1440,  emoji:'🥇', label:'ทอง',      color:'#FFC15E' }, // 24 ชม. (1 วัน)
+  { minMinutes:720,   emoji:'🥈', label:'เงิน',     color:'#C9D2E0' }, // 12 ชม.
+  { minMinutes:180,   emoji:'🥉', label:'ทองแดง',   color:'#D79A6A' }, // 3 ชม.
+];
+function getBadge(minutes){
+  for(const t of badgeTiers) if((minutes||0) >= t.minMinutes) return t;
+  return null;
+}
+function formatOnlineTime(minutes){
+  minutes = minutes||0;
+  const d = Math.floor(minutes/1440);
+  const h = Math.floor((minutes%1440)/60);
+  const m = minutes%60;
+  const parts = [];
+  if(d>0) parts.push(`${d} วัน`);
+  if(h>0) parts.push(`${h} ชม.`);
+  if(d===0 && m>0) parts.push(`${m} นาที`); // hide minutes once we're counting in days, keeps it readable
+  return parts.length ? parts.join(' ') : '0 นาที';
+}
+function badgeHtml(minutes, size){
+  const b = getBadge(minutes);
+  if(!b) return '';
+  const fs = size||'14px';
+  return `<span title="ระดับ ${b.label} (${formatOnlineTime(minutes)})" style="font-size:${fs};">${b.emoji}</span>`;
+}
+
+let onlineTimeInterval = null;
+function startOnlineTimeTracking(){
+  if(onlineTimeInterval || !sb) return;
+  pingOnlineTime(); // ping immediately so it feels responsive, then every 60s
+  onlineTimeInterval = setInterval(pingOnlineTime, 60000);
+}
+function stopOnlineTimeTracking(){
+  if(onlineTimeInterval){ clearInterval(onlineTimeInterval); onlineTimeInterval=null; }
+}
+async function pingOnlineTime(){
+  if(!sb || !state.currentUser) return;
+  try{
+    await sb.rpc('ping_online_time');
+    // refresh local minute count roughly (server enforces the real minimum-interval rule)
+    state.currentUser.onlineMinutes = (state.currentUser.onlineMinutes||0) + 1;
+    renderNavActions();
+  }catch(e){ console.error('ping_online_time failed', e); }
+}
+
+/* ================= LEADERBOARD (real-time, ranked by total exercise score) ================= */
+async function renderLeaderboard(){
+  const tbody = document.getElementById('leaderboardBody');
+  const tierList = document.getElementById('badgeTierList');
+  if(tierList){
+    tierList.innerHTML = badgeTiers.slice().reverse().map(t=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px;">
+        <span style="font-size:20px;">${t.emoji}</span>
+        <span style="font-weight:700;color:var(--heading);min-width:70px;">${t.label}</span>
+        <span style="color:var(--ink-soft);">เวลาออนไลน์สะสม ${formatOnlineTime(t.minMinutes)} ขึ้นไป</span>
+      </div>`).join('');
+  }
+  if(!tbody) return;
+  if(!sb){ tbody.innerHTML = `<tr><td colspan="3" class="empty">เชื่อมต่อระบบไม่สำเร็จ</td></tr>`; return; }
+
+  const { data: rows, error: lbErr } = await sb.rpc('get_leaderboard', { lim: 20 });
+  if(lbErr){ tbody.innerHTML = `<tr><td colspan="3" class="empty">โหลดกระดานคะแนนไม่สำเร็จ (ต้องล็อกอินก่อน)</td></tr>`; return; }
+  if(!rows || !rows.length){
+    tbody.innerHTML = `<tr><td colspan="3" class="empty">ยังไม่มีใครทำแบบฝึกเลย — เป็นคนแรกที่ขึ้นกระดานสิ!</td></tr>`;
+    return;
+  }
+  const ranked = rows.map(r=>({ name:r.name, points:Number(r.points)||0, minutes:r.online_minutes||0, avatar:r.avatar_url||null }));
+
+  const medal = i => i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+  tbody.innerHTML = ranked.map((r,i)=>`
+    <tr>
+      <td style="font-size:${i<3?'20px':'14px'};font-weight:700;">${medal(i)}</td>
+      <td><div style="display:flex;align-items:center;gap:8px;">${avatarHtml(r.avatar, r.name, 30)}<span>${escapeHtml(r.name)} ${badgeHtml(r.minutes)}</span></div></td>
+      <td style="text-align:right;font-weight:700;color:var(--heading);">${r.points} แต้ม</td>
+    </tr>`).join('');
+}
+// keep the leaderboard live — re-render whenever any new attempt is saved anywhere
+if(sb){
+  sb.channel('public:exercise_attempts-leaderboard')
+    .on('postgres_changes', { event:'INSERT', schema:'public', table:'exercise_attempts' }, ()=>{
+      if(document.getElementById('view-leaderboard')?.classList.contains('active')) renderLeaderboard();
+    })
+    .subscribe();
+  setInterval(()=>{
+    if(document.getElementById('view-leaderboard')?.classList.contains('active')) renderLeaderboard();
+  }, 30000);
+}
+</script>
+</body>
+</html>
